@@ -1,0 +1,49 @@
+.container {
+  /* Add any styles you want for the container */
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid darkgray;
+  background-color: lightgray;
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
+  margin: 10px;
+  position: relative; /* add this to position the label correctly */
+  padding: 10px; /* add padding */
+  box-sizing: border-box; /* make padding included in the width and height */
+}
+
+.input {
+  width: 100%; /* adjust as needed */
+  text-align: center;
+  border: none;
+  background-color: transparent; /* make input field transparent */
+  padding: 10px; /* add padding */
+  box-sizing: border-box; /* make padding included in the width */
+}
+
+
+.label {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.1s ease-in-out;
+}
+
+input:focus + .label,
+input:not(:placeholder-shown) + .label {
+  top: -30px;
+  font-size: 0.8em;
+  color: gray;
+}
