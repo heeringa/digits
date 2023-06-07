@@ -8,19 +8,19 @@ export default function Page() {
   const [text, setText] = useState(Array(6).fill(''));
   const [focus, setFocus] = useState(Array(6).fill(false));
 
-  const handleChange = (index, event) => {
+  const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const newText = [...text];
     newText[index] = event.target.value;
     setText(newText);
   };
 
-  const handleFocus = (index) => {
+  const handleFocus = (index: number) => {
     const newFocus = [...focus];
     newFocus[index] = true;
     setFocus(newFocus);
   };
 
-  const handleBlur = (index) => {
+  const handleBlur = (index: number) => {
     const newFocus = [...focus];
     newFocus[index] = false;
     setFocus(newFocus);
