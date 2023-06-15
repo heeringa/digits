@@ -1,45 +1,6 @@
 from typing import Iterable, List, TypeVar, Generator
 import itertools
 
-T = TypeVar('T')
-
-def subsets(my_list: List[int], min_length: int) -> Generator[List[int], None, None]:
-    """
-    Generates all subsets of my_list with length >= min_length
-    @param my_list: the list to generate subsets of
-    @param min_length: the minimum length of the subsets to generate
-    """
-    for i in range(min_length, len(my_list) + 1):
-        for subset in itertools.combinations(my_list, i):
-            yield list(subset)
-
-# my_list = [1, 2, 3]
-# for subset in subsets(my_list, 2):
-#     print(subset)
-
-
-def generate_lists(tokens: List[str], N: int) -> List[List[str]]:
-    if N == 0:
-        return [[]]  # Base case: Return a list with an empty list as the only element    
-    result = []
-    for token in tokens:
-        # Recursively generate lists of length N-1 using the remaining tokens
-        sublists = generate_lists(tokens, N - 1)
-        # Append the current token to each sublist of length N-1
-        for sublist in sublists:
-            result.append([token] + sublist)
-    
-    return result
-
-
-# Test the generate_lists function
-tokens = ['A', 'B', 'C']
-N = 3
-lists = generate_lists(tokens, N)
-for lst in lists:
-    print(lst)
-
-
 def combine(op, x, y):
     if op == '+':
         return x + y
@@ -50,41 +11,50 @@ def combine(op, x, y):
     elif op == '/':
         return x / y
 
-def eval_digits(opsstr, perm, goal, history=[]):
+def eval_digits_for_display(opsstr, perm):
     assert(len(opsstr) == len(perm)-1)
-    perm = perm[:]
-    x = perm.pop()
-    if len(opsstr) == 0:
-        if x == goal:
-            return True, history
-        else:
-            return False, []
-    else:
-        y = perm.pop()
-        op = opsstr.pop()
-        result = combine(op, x, y)
-        perm.append(result)
-        history.append("{} {} {} = {}".format(x, op, y, result))
-        return eval_digits(opsstr, perm, goal, history)    
+    history = []
+    prev = perm[0]
+    for op, x in zip(opsstr, perm[1:]):
+        y = combine(op, prev, x)
+        history.append("{} {} {} = {}".format(prev, op, x, y))
+        prev = y
+    return history
 
-DIGITS = [3, 7, 11, 13, 19, 20]
-OPS = ['+', '-', '*', '/']
-GOAL = 428
-
-for ss in subsets(DIGITS, 2):
-    l = len(ss)
-    for perm in itertools.permutations(ss):
-        for opstring in generate_lists(OPS, l-1):
-            o = opstring[:] 
-            #print("Considering {} with {}".format(perm, opstring))
-            success, history = eval_digits(opstring, perm, GOAL, [])
-            if success:
-                print("Considering {} with {} and found {}".format(perm,o,history))
-                
-        
+def eval_digits(opsstr, perm):
+    """
+    Evaluate a list of digits with a list of operators from left to right
+    @param opsstr: a list of operators
+    @param perm: a list of digits
+    """
+    assert(len(opsstr) == len(perm)-1)
+    prev = perm[0]
+    for op, x in zip(opsstr, perm[1:]):
+        prev = combine(op, prev, x)
+    return prev
 
 
+def generate_solutions(digits, ops, goal):
+    sols = {}
+    # Generate all permutations of all the subsets
+    # of the digits and evaluatte them against 
+    # all possible operator strings
+    for length in range(2, len(digits)+1):
+        for perm in itertools.permutations(digits, length):
+            for op_str in itertools.product(ops, repeat=len(perm)-1):
+                if eval_digits(op_str, perm) == goal:
+                    sols.setdefault(length-1, []).append((perm, op_str))
+    return sols 
 
 
+if __name__ == '__main__':
+    DIGITS = [3, 7, 11, 13, 19, 20]
+    OPS = ['+', '-', '*', '/']
+    GOAL = 428
 
+    sols = generate_solutions(DIGITS, OPS, GOAL)
+    for k,v in sols.items():
+        for sol in v:
+            history = eval_digits_for_display(sol[1], sol[0])
+            print("{}: {}".format(k, " :: ".join(history)))
 
