@@ -1,5 +1,4 @@
-from typing import Iterable, List, TypeVar, Generator
-import itertools
+import queue
 
 def combine(op, x, y):
     if op == '+':
@@ -9,42 +8,66 @@ def combine(op, x, y):
     elif op == '*':
         return x * y
     elif op == '/':
-        return x / y
-
-def eval_digits_for_display(opsstr, perm):
-    assert(len(opsstr) == len(perm)-1)
-    history = []
-    prev = perm[0]
-    for op, x in zip(opsstr, perm[1:]):
-        y = combine(op, prev, x)
-        history.append("{} {} {} = {}".format(prev, op, x, y))
-        prev = y
-    return history
-
-def eval_digits(opsstr, perm):
-    """
-    Evaluate a list of digits with a list of operators from left to right
-    @param opsstr: a list of operators
-    @param perm: a list of digits
-    """
-    assert(len(opsstr) == len(perm)-1)
-    prev = perm[0]
-    for op, x in zip(opsstr, perm[1:]):
-        prev = combine(op, prev, x)
-    return prev
-
+        return x // y
 
 def generate_solutions(digits, ops, goal):
-    sols = {}
-    # Generate all permutations of all the subsets
-    # of the digits and evaluatte them against 
-    # all possible operator strings
-    for length in range(2, len(digits)+1):
-        for perm in itertools.permutations(digits, length):
-            for op_str in itertools.product(ops, repeat=len(perm)-1):
-                if eval_digits(op_str, perm) == goal:
-                    sols.setdefault(length-1, []).append((perm, op_str))
-    return sols 
+    """
+    Generate all solutions for the given digits, operators, and goal.
+    Symmetries in operations are not considered, but symmetries in order are.
+    @param digits: a list of digits
+    @param ops: a list of operators as strings
+    @param goal: the goal number
+    @return: a dictionary mapping each final solution to a list of 
+             all possible paths to that solution
+    """
+
+    def extract_solutions(seed, history):
+        results = []
+        for op, x, y, remaining in history[seed]:
+            orig = remaining + [x,y]
+            orig.sort()
+            sols = extract_solutions(tuple(orig), history)
+            if len(sols) == 0:
+                sols = [[]]
+            for sol in sols:
+                sol.append((op, x, y))
+            results.extend(sols)
+        return results
+        
+    sols = []
+    history = {}
+    digits = sorted(digits)
+    history[tuple(digits)] = []
+    q = queue.Queue()
+    q.put(digits)
+    while not q.empty():
+        lst = q.get()
+        length = len(lst)
+        if length > 1:
+            for i in range(0,length):
+                for j in range(i+1,length):
+                    x = max(lst[i], lst[j])
+                    y = min(lst[i], lst[j]) 
+                    for op in ops:
+                        if op == '/' and (y == 0 or x % y != 0):
+                            continue
+                        result = combine(op, x, y)
+                        # the list of digits sans x and y
+                        remaining_orig = lst[:i] + lst[i+1:j] + lst[j+1:]
+                        # create the new remaining digits, with the result, sorted
+                        remaining = remaining_orig[:]
+                        remaining.append(result)
+                        remaining.sort()
+                        remaining_frozen = tuple(remaining)
+                        if remaining_frozen not in history:
+                            q.put(remaining)
+                            if result == goal:
+                                sols.append(remaining_frozen)
+                        # add the current operation as a parent pointer to the new result                            
+                        history.setdefault(remaining_frozen, []).append((op, x, y, remaining_orig))
+    
+    return {sol: extract_solutions(sol, history) for sol in sols}
+
 
 
 if __name__ == '__main__':
@@ -54,7 +77,6 @@ if __name__ == '__main__':
 
     sols = generate_solutions(DIGITS, OPS, GOAL)
     for k,v in sols.items():
-        for sol in v:
-            history = eval_digits_for_display(sol[1], sol[0])
-            print("{}: {}".format(k, " :: ".join(history)))
+         for sol in v:
+             print(k,sol)
 
