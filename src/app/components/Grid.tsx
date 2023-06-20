@@ -10,8 +10,9 @@ interface GridProps {
 
 function Grid({ values, numColumns, isEditable, handleGridViewChange }: GridProps): JSX.Element {  
   
+  let style = `grid grid-cols-${numColumns} gap-4`
   return (
-    <div className={`grid grid-cols-${numColumns} gap-4`}>
+    <div className={style}>
       {values.map((value, index) => (
         <NumberView 
           key={index}
