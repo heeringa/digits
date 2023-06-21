@@ -38,10 +38,11 @@ function evalDigitsForDisplay(opsstr: string[], perm: number[]): string[] {
 export default function Home() {
   
   const SIZE = 6
-  // Change 'any' to your expected API response type
-  const [apiResponse, setApiResponse] = useState<any>(null); 
   const [isEditable, setEditable] = useState(true);
   const [values, setValues] = useState(Array<number>(SIZE).fill(0));
+  const [visible, setVisible] = useState(Array<boolean>(SIZE).fill(true));
+  const [numSelected, setNumSelected] = useState<number | null>(null);
+  const [opsSelected, setOpsSelected] = useState<string |null>(null);
 
   function handleGridValuesChange(index: number, value: number): void {
     const newValues = [...values];
@@ -49,8 +50,37 @@ export default function Home() {
     setValues(newValues);
   };
 
-  async function onOperationClick(event: React.MouseEvent<HTMLInputElement, MouseEvent>): Promise<void> {
-  
+  async function onNumberClick(index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
+    console.log(event);
+    // if we haven't selected a number yet or if we're selecting a new number without having 
+    // selected an operation yet
+    if (numSelected === null || (numSelected !== index && opsSelected === null)) {
+      setNumSelected(index);
+    } else if (numSelected === index) {
+      setNumSelected(null);
+      setOpsSelected(null);
+    } else if (numSelected !== null && opsSelected !== null) {
+      let vals = [...values];
+      vals[index] = combine(opsSelected, vals[numSelected], vals[index]);
+      setValues(vals);
+      let v = [...visible];
+      v[numSelected] = false;
+      setVisible(v);
+      setNumSelected(null);
+      setOpsSelected(null);
+    }
+  }
+
+  async function onOperationClick(op: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
+    console.log(op);
+    console.log(event);
+    if (numSelected !== null) {
+      if (opsSelected === null || opsSelected !== op) {
+        setOpsSelected(op);
+      } else if (opsSelected === op) {
+        setOpsSelected(null);
+      } 
+  }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
@@ -85,13 +115,34 @@ export default function Home() {
   return (
     <div className="h-screen flex flex-col items-center justify-center">
     {/* </div><div className="h-screen flex items-center justify-center"> */}
-      <Grid values={values} numColumns={3} isEditable={isEditable} handleGridViewChange={handleGridValuesChange} />
+      <Grid values={values} 
+            numColumns={3} 
+            isEditable={isEditable}
+            visible={visible}
+            selected={numSelected} 
+            onNumberClick={onNumberClick} 
+            handleGridViewChange={handleGridValuesChange} />
       <div className="flex mt-6 gap-2">
-      <Operation value="+" isEditable={isEditable} onOperationClick={onOperationClick} />
-      <Operation value="-" isEditable={isEditable} onOperationClick={onOperationClick} />
-      <Operation value="*" isEditable={isEditable} onOperationClick={onOperationClick} />
-      <Operation value="/" isEditable={isEditable} onOperationClick={onOperationClick} />
-      <Operation value="🔙" isEditable={isEditable} onOperationClick={onOperationClick} />
+        <Operation value="+" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "+"} 
+                   onOperationClick={onOperationClick} />
+        <Operation value="-" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "-"}
+                   onOperationClick={onOperationClick} />
+        <Operation value="*" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "*"}
+                   onOperationClick={onOperationClick} />
+        <Operation value="/" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "/"} 
+                   onOperationClick={onOperationClick} />
+        <Operation value="🔙" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "🔙"}
+                   onOperationClick={onOperationClick} />
       </div>
     </div>
       
