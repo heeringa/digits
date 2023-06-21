@@ -60,14 +60,20 @@ export default function Home() {
       setNumSelected(null);
       setOpsSelected(null);
     } else if (numSelected !== null && opsSelected !== null) {
-      let vals = [...values];
-      vals[index] = combine(opsSelected, vals[numSelected], vals[index]);
-      setValues(vals);
-      let v = [...visible];
-      v[numSelected] = false;
-      setVisible(v);
-      setNumSelected(null);
-      setOpsSelected(null);
+      let x = values[numSelected]
+      let y = values[index]
+      if (opsSelected === '/' && (y == 0 || x % y !== 0)) {
+        setOpsSelected(null);
+      } else {
+        let vals = [...values];
+        vals[index] = combine(opsSelected, vals[numSelected], vals[index]);
+        setValues(vals);
+        let v = [...visible];
+        v[numSelected] = false;
+        setVisible(v);
+        setNumSelected(null);
+        setOpsSelected(null);
+      }
     }
   }
 
