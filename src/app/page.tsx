@@ -3,6 +3,7 @@
 import React, { FormEvent, useState } from 'react';
 import Grid from './components/Grid';
 import Operation from './components/Operation';
+import Goal from './components/Goal';
 
 function combine(op: string, a: number, b: number): number {
   switch (op) {
@@ -40,21 +41,27 @@ export default function Home() {
   
   const SIZE = 6
   const [isEditable, setEditable] = useState(true);
-  const [values, setValues] = useState(Array<number>(SIZE).fill(0));
+  const [values, setValues] = useState(Array<number | null>(SIZE).fill(null));
   const [visible, setVisible] = useState(Array<boolean>(SIZE).fill(true));
   const [numSelected, setNumSelected] = useState<number | null>(null);
   const [opsSelected, setOpsSelected] = useState<string |null>(null);
+  const [goalValue, setGoalValue] = useState<number | null>(42);
+
+  function massage(n: number): number | null {
+    return (!isNaN(n)) ? n : null;
+  }
 
   function handleGridValuesChange(index: number, value: number): void {
     const newValues = [...values];
-    newValues[index] = value;
+    newValues[index] = massage(value);
     setValues(newValues);
   }
 
+  function handleGoalValueChange(value: number): void {
+    setGoalValue(massage(value));
+  }
+
   async function onNumberClick(index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
-    console.log(event);
-    // if we haven't selected a number yet or if we're selecting a new number without having 
-    // selected an operation yet
     if (numSelected === null || (numSelected !== index && opsSelected === null)) {
       setNumSelected(index);
     } else if (numSelected === index) {
@@ -121,7 +128,9 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-    {/* </div><div className="h-screen flex items-center justify-center"> */}
+      <div className="mb-10">
+      <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
+      </div>      
       <Grid values={values} 
             numColumns={3} 
             isEditable={isEditable}
@@ -150,6 +159,11 @@ export default function Home() {
                    isEditable={isEditable} 
                    isSelected={opsSelected === "🔙"}
                    onOperationClick={onOperationClick} />
+      </div>
+
+      <div className="w-[400px] h-[400px] overflow-auto border border-black-400 mt-10">
+      First line of text.<br />
+      Second line of text.
       </div>
     </div>
       

@@ -3,13 +3,13 @@ import styles from './NumberView.module.css';
 
 interface NumberProps {
   index: number;
-  value: number;    
+  value: number | null;    
   isEditable: boolean;
   isSelected: boolean;
   isVisible: boolean;
   
   onNumberClick: (index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  onChange: (index: number, value: number) => void;
+  onChange: (index: number, value: number | null) => void;
 
 }
 
@@ -30,7 +30,7 @@ function NumberView({ index, value, isEditable=true, isSelected=false, isVisible
             type="number"
             placeholder = ""
             readOnly={!isEditable} 
-            value={value}
+            value={value === null ? "" : value}
             onChange={event => onChange(index, event.target.valueAsNumber)}
             />
     </div>
