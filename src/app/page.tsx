@@ -66,10 +66,10 @@ export default function Home() {
       if (opsSelected === '/' && (y == 0 || x % y !== 0)) {
         setOpsSelected(null);
       } else {
-        let vals = [...values];
+        const vals = [...values];
         vals[index] = combine(opsSelected, x, y);
         setValues(vals);
-        let v = [...visible];
+        const v = [...visible];
         v[numSelected] = false;
         setVisible(v);
         setNumSelected(null);
