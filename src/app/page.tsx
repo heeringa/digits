@@ -14,25 +14,26 @@ function combine(op: string, a: number, b: number): number {
   }
 }
 
+/* 
 function evalDigitsForDisplay(opsstr: string[], perm: number[]): string[] {
   if (opsstr.length !== perm.length - 1) {
       throw new Error("Invalid input. opsstr length must be equal to perm length - 1.");
   }
 
-  let history: string[] = [];
+  const history: string[] = [];
   let prev: number = perm[0];
 
   for (let i = 0; i < opsstr.length; i++) {
-      let op = opsstr[i];
-      let x = perm[i + 1];
-      let y = combine(op, prev, x);
+      const op = opsstr[i];
+      const x = perm[i + 1];
+      const y = combine(op, prev, x);
       history.push(`${prev} ${op} ${x} = ${y}`);
       prev = y;
   }
 
   return history;
 }
-
+ */
 
 
 export default function Home() {
@@ -48,7 +49,7 @@ export default function Home() {
     const newValues = [...values];
     newValues[index] = value;
     setValues(newValues);
-  };
+  }
 
   async function onNumberClick(index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
     console.log(event);
@@ -60,13 +61,13 @@ export default function Home() {
       setNumSelected(null);
       setOpsSelected(null);
     } else if (numSelected !== null && opsSelected !== null) {
-      let x = values[numSelected]
-      let y = values[index]
+      const x = values[numSelected]
+      const y = values[index]
       if (opsSelected === '/' && (y == 0 || x % y !== 0)) {
         setOpsSelected(null);
       } else {
         let vals = [...values];
-        vals[index] = combine(opsSelected, vals[numSelected], vals[index]);
+        vals[index] = combine(opsSelected, x, y);
         setValues(vals);
         let v = [...visible];
         v[numSelected] = false;

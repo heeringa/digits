@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './NumberView.module.css';
 
 interface NumberProps {
@@ -15,7 +15,7 @@ interface NumberProps {
 
 function NumberView({ index, value, isEditable=true, isSelected=false, isVisible=true, onNumberClick, onChange }:NumberProps): React.JSX.Element {
 
-  let basestyle = "flex items-center justify-center h-24 w-24 rounded-3xl border border-gray-800";
+  const basestyle = "flex items-center justify-center h-24 w-24 rounded-3xl border border-gray-800";
   let style = isEditable ? `${basestyle} ${styles.pulse}` : basestyle;
   style = isSelected ? `${style} bg-blue-500 text-white` : `${style} bg-white text-black`;
   style = isVisible ? `${style}` : `${style} opacity-0 pointer-events-none`;

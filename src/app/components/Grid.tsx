@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import NumberView from './NumberView';
 
 interface GridProps {
@@ -13,7 +13,7 @@ interface GridProps {
 
 function Grid({ values, numColumns, isEditable, visible, selected, onNumberClick, handleGridViewChange }: GridProps): JSX.Element {  
   
-  let style = `grid grid-cols-${numColumns} gap-4`
+  const style = `grid grid-cols-${numColumns} gap-4`;
   return (
     <div className={style}>
       {values.map((value, index) => (
