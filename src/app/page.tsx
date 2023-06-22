@@ -44,6 +44,8 @@ export default function Home() {
   const SIZE = 6
   const [isEditable, setEditable] = useState(false);
   const [values, setValues] = useState(Array<number | null>(SIZE).fill(null));
+  const [valuesHistory, setValuesHistory] = useState<Array<number | null>[]>([]);
+  const [visibleHistory, setVisibleHistory] = useState<Array<boolean>[]>([]);
   const [visible, setVisible] = useState(Array<boolean>(SIZE).fill(true));
   const [numSelected, setNumSelected] = useState<number | null>(null);
   const [opsSelected, setOpsSelected] = useState<string |null>(null);
@@ -79,9 +81,13 @@ export default function Home() {
       if (opsSelected === '/' && (y == 0 || (x !== null && y!== null && x % y !== 0))) {
         setOpsSelected(null);
       } else if (x !== null && y !== null) {
+        // update values + history
+        setValuesHistory([...valuesHistory, values]);
         const vals = [...values];
         vals[index] = combine(opsSelected, x, y);
         setValues(vals);
+        // update visibibility + history
+        setVisibleHistory([...visibleHistory, visible]);
         const v = [...visible];
         v[numSelected] = false;
         setVisible(v);
@@ -94,13 +100,26 @@ export default function Home() {
   async function onOperationClick(op: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
     console.log(op);
     console.log(event);
-    if (numSelected !== null) {
-      if (opsSelected === null || opsSelected !== op) {
-        setOpsSelected(op);
-      } else if (opsSelected === op) {
-        setOpsSelected(null);
+    if (op === "🔙") {
+      if (valuesHistory.length > 0) {
+        const vals = valuesHistory.pop();
+        if (vals !== undefined) {
+          setValues(vals);
+        }
+        const v = visibleHistory.pop();
+        if (v !== undefined) {
+          setVisible(v);  
+        }
+      }
+    } else {
+      if (numSelected !== null) {
+        if (opsSelected === null || opsSelected !== op) {
+          setOpsSelected(op);
+        } else if (opsSelected === op) {
+          setOpsSelected(null);
+        }
       } 
-  }
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
