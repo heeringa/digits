@@ -6,6 +6,7 @@ import Operation from './components/Operation';
 import Goal from './components/Goal';
 import Toggle from './components/Toggle';
 
+
 function combine(op: string, a: number, b: number): number {
   switch (op) {
       case '+': return a + b;
