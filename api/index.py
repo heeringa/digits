@@ -1,13 +1,11 @@
-from typing import Union
-from fastapi import FastAPI
+from typing import List, Optional
+from fastapi import FastAPI, Query
+from digits import generate_solutions
 
 app = FastAPI()
 
-@app.get("/api/hello")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/api/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/api/solution")   
+def solution(goal: int, nums: Optional[List[int]] = Query(None)):
+    print(goal, nums)
+    return generate_solutions(nums, ['+', '-', '*', '/'], goal)
+    
