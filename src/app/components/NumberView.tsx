@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './NumberView.module.css';
 
 interface NumberProps {
-  index: number
+  index: number;
+  value: number | null;    
   isEditable: boolean;
-  value: number;
-  onChange: (index: number, value: number) => void;
+  isSelected: boolean;
+  isVisible: boolean;
+  
+  onNumberClick: (index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onChange: (index: number, value: number | null) => void;
+
 }
 
-function NumberView({ index, isEditable=true, value, onChange }:NumberProps): React.JSX.Element {
+function NumberView({ index, value, isEditable=true, isSelected=false, isVisible=true, onNumberClick, onChange }:NumberProps): React.JSX.Element {
 
-  let basestyle = "flex items-center justify-center h-24 w-24 rounded-3xl border border-gray-800";
-  let style = isEditable ? `${basestyle} ${styles.pulse}` : basestyle; 
+  const basestyle = "flex items-center justify-center h-24 w-24 rounded-3xl border border-gray-800";
+  let style = isEditable ? `${basestyle} ${styles.pulse}` : basestyle;
+  style = isSelected ? `${style} bg-blue-500 text-white` : `${style} bg-white text-black`;
+  style = isVisible ? `${style}` : `${style} opacity-0 pointer-events-none`;
+
   // focus:ring-2 focus:ring-gray-200
   return (
-    <div className={style}>
-     <input className="text-center text-3xl w-20 focus:border-gray-300 
+    <div className={style}
+         id={`pos-${index}`}
+         onClick={event => onNumberClick(index, event)}>
+     <input className="bg-transparent text-center text-3xl w-20 focus:border-gray-300 
                        focus:outline-none" 
             type="number"
             placeholder = ""
             readOnly={!isEditable} 
-            value={value}
+            value={value === null ? "" : value}
             onChange={event => onChange(index, event.target.valueAsNumber)}
             />
     </div>

@@ -1,7 +1,11 @@
 'use client';
 
-//import React, { FormEvent, useState } from 'react';
-//import Grid from './components/Grid';
+import React, { FormEvent, useState } from 'react';
+import Grid from './components/Grid';
+import Operation from './components/Operation';
+import Goal from './components/Goal';
+import Toggle from './components/Toggle';
+
 
 function combine(op: string, a: number, b: number): number {
   switch (op) {
@@ -13,114 +17,163 @@ function combine(op: string, a: number, b: number): number {
   }
 }
 
+/* 
 function evalDigitsForDisplay(opsstr: string[], perm: number[]): string[] {
   if (opsstr.length !== perm.length - 1) {
       throw new Error("Invalid input. opsstr length must be equal to perm length - 1.");
   }
 
-  let history: string[] = [];
+  const history: string[] = [];
   let prev: number = perm[0];
 
   for (let i = 0; i < opsstr.length; i++) {
-      let op = opsstr[i];
-      let x = perm[i + 1];
-      let y = combine(op, prev, x);
+      const op = opsstr[i];
+      const x = perm[i + 1];
+      const y = combine(op, prev, x);
       history.push(`${prev} ${op} ${x} = ${y}`);
       prev = y;
   }
 
   return history;
 }
+ */
 
 
-import React, { useState, useRef, useEffect } from "react";
-//import './App.css';
+export default function Home() {
+  
+  const SIZE = 6
+  const [isEditable, setEditable] = useState(false);
+  const [values, setValues] = useState(Array<number | null>(SIZE).fill(null));
+  const [visible, setVisible] = useState(Array<boolean>(SIZE).fill(true));
+  const [numSelected, setNumSelected] = useState<number | null>(null);
+  const [opsSelected, setOpsSelected] = useState<string |null>(null);
+  const [goalValue, setGoalValue] = useState<number | null>(42);
 
-function App() {
-  const [translateX, setTranslateX] = useState(0);
-  const circleRef = useRef();
+  function massage(n: number | null): number | null {
+    return (n !== null && !isNaN(n)) ? n : null;
+  }
 
-  useEffect(() => {
-    const rect = circleRef.current.getBoundingClientRect();
-    setTranslateX(rect.x);
-  }, []);
+  function handleGridValuesChange(index: number, value: number | null): void {
+    const newValues = [...values];
+    newValues[index] = massage(value);
+    setValues(newValues);
+  }
 
-  const handleClick = () => {
-    setTranslateX(translateX === 0 ? circleRef.current.getBoundingClientRect().x : 0);
-  };
+  function handleGoalValueChange(value: number | null): void {
+    setGoalValue(massage(value));
+  }
 
-  const circleStyle = {
-    transform: `translateX(${translateX}px)`,
-    transition: 'transform 2s',
-  };
+  function handleToggleChange(value: boolean): void {
+    setEditable(value);
+  }
+
+  async function onNumberClick(index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
+    if (numSelected === null || (numSelected !== index && opsSelected === null)) {
+      setNumSelected(index);
+    } else if (numSelected === index) {
+      setNumSelected(null);
+      setOpsSelected(null);
+    } else if (numSelected !== null && opsSelected !== null) {
+      const x = values[numSelected]
+      const y = values[index]
+      if (opsSelected === '/' && (y == 0 || (x !== null && y!== null && x % y !== 0))) {
+        setOpsSelected(null);
+      } else if (x !== null && y !== null) {
+        const vals = [...values];
+        vals[index] = combine(opsSelected, x, y);
+        setValues(vals);
+        const v = [...visible];
+        v[numSelected] = false;
+        setVisible(v);
+        setNumSelected(null);
+        setOpsSelected(null);
+      }
+    }
+  }
+
+  async function onOperationClick(op: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
+    console.log(op);
+    console.log(event);
+    if (numSelected !== null) {
+      if (opsSelected === null || opsSelected !== op) {
+        setOpsSelected(op);
+      } else if (opsSelected === op) {
+        setOpsSelected(null);
+      } 
+  }
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
+    
+    event.preventDefault();
+    console.log(event);
+
+    /*
+    const data = new FormData(event.currentTarget);
+    console.log(data);
+    const goal = data.get('goal');
+    data.delete('goal')
+    console.log(goal);
+    
+    console.log(Array.from(data.entries()));
+
+    const inputsAsString = Array.from(data.values()).map(i => `nums=${i}`).join('&');
+    console.log(inputsAsString); // logs "input0=value0&input1=value1&..."
+  
+    const url = `/api/solution?goal=${goal}&${inputsAsString}`;
+    const response = await fetch(url);
+    const json = await response.json();
+    console.log(json);
+    for (let [key, value] of Object.entries(json)) {
+      console.log(`Key: ${key}, Value: ${value}`);
+    }
+    setApiResponse(json);
+    console.log(json);   
+    */ 
+  }
 
   return (
-    <div className="container">
-      <div className="circle" style={circleStyle} onClick={handleClick}></div>
-      <div className="circle" ref={circleRef}></div>
+    <div className="h-screen flex flex-col items-center justify-center">
+      <Toggle isEditable={isEditable} onToggleChange={handleToggleChange}></Toggle>
+      <div className="mb-10">
+      <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
+      </div>      
+      <Grid values={values} 
+            numColumns={3} 
+            isEditable={isEditable}
+            visible={visible}
+            selected={numSelected} 
+            onNumberClick={onNumberClick} 
+            handleGridValuesChange={handleGridValuesChange} />
+      <div className="flex mt-6 gap-2">
+        <Operation value="+" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "+"} 
+                   onOperationClick={onOperationClick} />
+        <Operation value="-" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "-"}
+                   onOperationClick={onOperationClick} />
+        <Operation value="*" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "*"}
+                   onOperationClick={onOperationClick} />
+        <Operation value="/" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "/"} 
+                   onOperationClick={onOperationClick} />
+        <Operation value="🔙" 
+                   isEditable={isEditable} 
+                   isSelected={opsSelected === "🔙"}
+                   onOperationClick={onOperationClick} />
+      </div>
+
+      <div className="w-[400px] h-[400px] overflow-auto border border-black-400 mt-10">
+      First line of text.<br />
+      Second line of text.
+      </div>
     </div>
+      
+    
   );
 }
-
-export default App;
-
-
-// export default function Home() {
-  
-//   const SIZE = 6
-//   // Change 'any' to your expected API response type
-//   const [apiResponse, setApiResponse] = useState<any>(null); 
-//   const [isEditable, setEditable] = useState(true);
-//   const [values, setValues] = useState(Array<number>(SIZE).fill(0));
-
-//   function handleGridValuesChange(index: number, value: number): void {
-//     const newValues = [...values];
-//     newValues[index] = value;
-//     setValues(newValues);
-//   };
-
-//   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
-    
-//     event.preventDefault();
-//     console.log(event);
-
-//     /*
-//     const data = new FormData(event.currentTarget);
-//     console.log(data);
-//     const goal = data.get('goal');
-//     data.delete('goal')
-//     console.log(goal);
-    
-//     console.log(Array.from(data.entries()));
-
-//     const inputsAsString = Array.from(data.values()).map(i => `nums=${i}`).join('&');
-//     console.log(inputsAsString); // logs "input0=value0&input1=value1&..."
-  
-//     const url = `/api/solution?goal=${goal}&${inputsAsString}`;
-//     const response = await fetch(url);
-//     const json = await response.json();
-//     console.log(json);
-//     for (let [key, value] of Object.entries(json)) {
-//       console.log(`Key: ${key}, Value: ${value}`);
-//     }
-//     setApiResponse(json);
-//     console.log(json);   
-//     */ 
-//   }
-
-//   return (
-//     <>
-//     <div className="h-screen flex items-center justify-center"> 
-//       <Grid values={values} numColumns={3} isEditable={isEditable} handleGridViewChange={handleGridValuesChange} />
-//     </div> 
-//     <div>
-//       {apiResponse && (
-//         <pre className="text-white bg-black rounded p-2 mt-4">
-//           {JSON.stringify(apiResponse, null, 2)}
-//         </pre>
-//       )}
-//     </div>
-//     </>
-
-//     );
-// }

@@ -13,7 +13,10 @@ module.exports = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      transform: ['hover', 'focus'],
+      transitionProperty: ['responsive', 'motion-safe', 'motion-reduce'],
     },
   },
   plugins: [],
+  variants: {},
 }
