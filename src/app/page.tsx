@@ -4,6 +4,7 @@ import React, { FormEvent, useState } from 'react';
 import Grid from './components/Grid';
 import Operation from './components/Operation';
 import Goal from './components/Goal';
+import Toggle from './components/Toggle';
 
 function combine(op: string, a: number, b: number): number {
   switch (op) {
@@ -40,25 +41,29 @@ function evalDigitsForDisplay(opsstr: string[], perm: number[]): string[] {
 export default function Home() {
   
   const SIZE = 6
-  const [isEditable, setEditable] = useState(true);
+  const [isEditable, setEditable] = useState(false);
   const [values, setValues] = useState(Array<number | null>(SIZE).fill(null));
   const [visible, setVisible] = useState(Array<boolean>(SIZE).fill(true));
   const [numSelected, setNumSelected] = useState<number | null>(null);
   const [opsSelected, setOpsSelected] = useState<string |null>(null);
   const [goalValue, setGoalValue] = useState<number | null>(42);
 
-  function massage(n: number): number | null {
-    return (!isNaN(n)) ? n : null;
+  function massage(n: number | null): number | null {
+    return (n !== null && !isNaN(n)) ? n : null;
   }
 
-  function handleGridValuesChange(index: number, value: number): void {
+  function handleGridValuesChange(index: number, value: number | null): void {
     const newValues = [...values];
     newValues[index] = massage(value);
     setValues(newValues);
   }
 
-  function handleGoalValueChange(value: number): void {
+  function handleGoalValueChange(value: number | null): void {
     setGoalValue(massage(value));
+  }
+
+  function handleToggleChange(value: boolean): void {
+    setEditable(value);
   }
 
   async function onNumberClick(index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
@@ -70,9 +75,9 @@ export default function Home() {
     } else if (numSelected !== null && opsSelected !== null) {
       const x = values[numSelected]
       const y = values[index]
-      if (opsSelected === '/' && (y == 0 || x % y !== 0)) {
+      if (opsSelected === '/' && (y == 0 || (x !== null && y!== null && x % y !== 0))) {
         setOpsSelected(null);
-      } else {
+      } else if (x !== null && y !== null) {
         const vals = [...values];
         vals[index] = combine(opsSelected, x, y);
         setValues(vals);
@@ -128,6 +133,7 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
+      <Toggle isEditable={isEditable} onToggleChange={handleToggleChange}></Toggle>
       <div className="mb-10">
       <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
       </div>      
@@ -137,7 +143,7 @@ export default function Home() {
             visible={visible}
             selected={numSelected} 
             onNumberClick={onNumberClick} 
-            handleGridViewChange={handleGridValuesChange} />
+            handleGridValuesChange={handleGridValuesChange} />
       <div className="flex mt-6 gap-2">
         <Operation value="+" 
                    isEditable={isEditable} 
