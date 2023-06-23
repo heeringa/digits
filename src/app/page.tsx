@@ -48,6 +48,8 @@ export default function Home() {
   const [numSelected, setNumSelected] = useState<number | null>(null);
   const [opsSelected, setOpsSelected] = useState<string |null>(null);
   const [goalValue, setGoalValue] = useState<number | null>(42);
+  const [valuesHistory, setValuesHistory] = useState<Array<number | null>[]>([]);
+  const [visibilityHistory, setVisibilityHistory] = useState<Array<boolean>[]>([]);
 
   function massage(n: number | null): number | null {
     return (n !== null && !isNaN(n)) ? n : null;
@@ -82,6 +84,8 @@ export default function Home() {
         if (opsSelected === '/' && (y == 0 || (x !== null && y!== null && x % y !== 0))) {
           setOpsSelected(null);
         } else if (x !== null && y !== null) {
+          setValuesHistory([...valuesHistory, values]);
+          setVisibilityHistory([...visibilityHistory, visible]);
           const vals = [...values];
           vals[index] = combine(opsSelected, x, y);
           setValues(vals);
@@ -99,12 +103,29 @@ export default function Home() {
     console.log(op);
     console.log(event);
     if (!isEditable) {
-      if (numSelected !== null) {
-        if (opsSelected === null || opsSelected !== op) {
-          setOpsSelected(op);
-        } else if (opsSelected === op) {
-          setOpsSelected(null);
-        } 
+      if (op === '🔙' && (valuesHistory.length > 0) ) {
+        console.log('valuesHistory: ' + valuesHistory);
+        const oldvals = valuesHistory.pop();
+        if (oldvals !== undefined) {
+          setValues(oldvals);
+        }
+        console.log('valuesHistory: ' + valuesHistory);    
+        console.log('visibilityHistory: ' + visibilityHistory);            
+        const oldviz = visibilityHistory.pop();
+        if (oldviz !== undefined) {
+          setVisible(oldviz);
+        }
+        console.log('visibilityHistory: ' + visibilityHistory);
+        setOpsSelected(null);
+        setNumSelected(null);
+      } else {
+        if (numSelected !== null) {
+          if (opsSelected === null || opsSelected !== op) {
+            setOpsSelected(op);
+          } else if (opsSelected === op) {
+            setOpsSelected(null);
+          } 
+        }
       }
     }
   }
