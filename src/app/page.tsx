@@ -98,13 +98,15 @@ export default function Home() {
   async function onOperationClick(op: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
     console.log(op);
     console.log(event);
-    if (numSelected !== null) {
-      if (opsSelected === null || opsSelected !== op) {
-        setOpsSelected(op);
-      } else if (opsSelected === op) {
-        setOpsSelected(null);
-      } 
-  }
+    if (!isEditable) {
+      if (numSelected !== null) {
+        if (opsSelected === null || opsSelected !== op) {
+          setOpsSelected(op);
+        } else if (opsSelected === op) {
+          setOpsSelected(null);
+        } 
+      }
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
