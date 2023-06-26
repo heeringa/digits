@@ -13,7 +13,7 @@ function Goal({ isEditable=true, value, onGoalChange }:GoalProps): React.JSX.Ele
   
   return (
     <div className={style}>
-      <input className="text-center text-4xl w-32 bg-transparent focus:outline-none" 
+      <input className="text-center text-4xl w-32 bg-transparent border-none focus:ring-0 focus:outline-none" 
              readOnly={!isEditable} 
              value={value === null ? "" : value}
              type="number"

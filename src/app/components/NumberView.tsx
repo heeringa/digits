@@ -26,7 +26,7 @@ function NumberView({ index, value, isEditable=true, isSelected=false, isVisible
     <div className={style}
          id={`pos-${index}`}
          onClick={event => onNumberClick(index, event)}>
-     <input className={"bg-transparent text-center text-3xl w-20 focus:border-gray-300 focus:outline-none" + (isEditable ? "" : " cursor-default select-none")} 
+     <input className={"border-none bg-transparent text-center text-3xl w-20 focus:ring-0 focus:border-none  " + (isEditable ? "" : " cursor-default select-none")} 
             type="number"
             placeholder = ""
             readOnly={!isEditable} 
