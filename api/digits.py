@@ -1,6 +1,14 @@
 import queue
 
-def combine(op, x, y):
+def combine(op: str, x: int, y:int) -> int:
+    """
+    Combine two numbers with the given operation.
+    @param op: the operation as a string
+    @param x: the first number
+    @param y: the second number
+    @return: the result of the operation
+    @raise ValueError: if the operation is not +, -, *, or /
+    """
     if op == '+':
         return x + y
     elif op == '-':
@@ -9,6 +17,8 @@ def combine(op, x, y):
         return x * y
     elif op == '/':
         return x // y
+    else:
+        raise ValueError('Invalid operation: ' + op)
 
 def generate_solutions(digits, ops, goal):
     """
@@ -17,11 +27,19 @@ def generate_solutions(digits, ops, goal):
     @param digits: a list of digits
     @param ops: a list of operators as strings
     @param goal: the goal number
-    @return: a dictionary mapping each final solution to a list of 
-             all possible paths to that solution
+    @return: a dictionary mapping each final solution set (i.e. the set of numbers
+             remaining) to a list of all possible paths to that solution set
     """
 
     def extract_solutions(seed, history):
+        """
+        Extract all solutions from the given seed and history.  This is backtracking
+        code throught the dynamic programming table.  It chases parent pointers and 
+        assembles solutions via recursive calls to extract_solution
+        @param seed: the seed entry to extract solutions from
+        @param history: the dynamic programming table
+        @return: a list of all possible paths to the solution
+        """
         results = []
         for op, x, y, remaining in history[seed]:
             orig = remaining + [x,y]
