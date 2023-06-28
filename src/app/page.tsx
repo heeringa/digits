@@ -5,7 +5,7 @@ import Grid from './components/Grid';
 import Operation from './components/Operation';
 import Goal from './components/Goal';
 import Toggle from './components/Toggle';
-
+import { Table } from 'flowbite-react';
 
 function combine(op: string, a: number, b: number): number {
   switch (op) {
@@ -160,44 +160,191 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      <Toggle isEditable={isEditable} onToggleChange={handleToggleChange}></Toggle>
-      <div className="mb-10">
-      <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
-      </div>      
-      <Grid values={values} 
-            numColumns={3} 
-            isEditable={isEditable}
-            visible={visible}
-            selected={numSelected} 
-            onNumberClick={onNumberClick} 
-            handleGridValuesChange={handleGridValuesChange} />
-      <div className="flex mt-6 gap-2">
-        <Operation value="+" 
-                   isEditable={isEditable} 
-                   isSelected={opsSelected === "+"} 
-                   onOperationClick={onOperationClick} />
-        <Operation value="-" 
-                   isEditable={isEditable} 
-                   isSelected={opsSelected === "-"}
-                   onOperationClick={onOperationClick} />
-        <Operation value="*" 
-                   isEditable={isEditable} 
-                   isSelected={opsSelected === "*"}
-                   onOperationClick={onOperationClick} />
-        <Operation value="/" 
-                   isEditable={isEditable} 
-                   isSelected={opsSelected === "/"} 
-                   onOperationClick={onOperationClick} />
-        <Operation value="🔙" 
-                   isEditable={isEditable} 
-                   isSelected={opsSelected === "🔙"}
-                   onOperationClick={onOperationClick} />
+    <div className="h-screen flex flex-col lg:flex-row items-center justify-center">
+      <div className="lg:w-1/2 h-screen flex flex-col items-center justify-center">
+        <Toggle isEditable={isEditable} onToggleChange={handleToggleChange}></Toggle>
+        <div className="mb-10">
+        <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
+        </div>      
+        <Grid values={values} 
+              numColumns={3} 
+              isEditable={isEditable}
+              visible={visible}
+              selected={numSelected} 
+              onNumberClick={onNumberClick} 
+              handleGridValuesChange={handleGridValuesChange} />
+        <div className="flex mt-6 gap-2">
+          <Operation value="+" 
+                    isEditable={isEditable} 
+                    isSelected={opsSelected === "+"} 
+                    onOperationClick={onOperationClick} />
+          <Operation value="-" 
+                    isEditable={isEditable} 
+                    isSelected={opsSelected === "-"}
+                    onOperationClick={onOperationClick} />
+          <Operation value="*" 
+                    isEditable={isEditable} 
+                    isSelected={opsSelected === "*"}
+                    onOperationClick={onOperationClick} />
+          <Operation value="/" 
+                    isEditable={isEditable} 
+                    isSelected={opsSelected === "/"} 
+                    onOperationClick={onOperationClick} />
+          <Operation value="🔙" 
+                    isEditable={isEditable} 
+                    isSelected={opsSelected === "🔙"}
+                    onOperationClick={onOperationClick} />
+        </div>
       </div>
 
-      <div className="w-[400px] h-[400px] overflow-auto border border-black-400 mt-10">
-      First line of text.<br />
-      Second line of text.
+      <div className="lg:w-1/2 h-screen flex flex-col items-center justify-center">
+        <Table striped className="relative">
+          <Table.Head>
+            <Table.HeadCell>
+              Product name
+            </Table.HeadCell>
+            <Table.HeadCell>
+              Color
+            </Table.HeadCell>
+            <Table.HeadCell>
+              Category
+            </Table.HeadCell>
+            <Table.HeadCell>
+              Price
+            </Table.HeadCell>
+            <Table.HeadCell>
+              <span className="sr-only">
+                Edit
+              </span>
+            </Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                Apple MacBook Pro 17 &quot;
+              </Table.Cell>
+              <Table.Cell>
+                Sliver
+              </Table.Cell>
+              <Table.Cell>
+                Laptop
+              </Table.Cell>
+              <Table.Cell>
+                $2999
+              </Table.Cell>
+              <Table.Cell>
+                <a
+                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                  href="/tables"
+                >
+                  <p>
+                    Edit
+                  </p>
+                </a>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                <p>
+                  Microsoft Surface Pro
+                </p>
+              </Table.Cell>
+              <Table.Cell>
+                White
+              </Table.Cell>
+              <Table.Cell>
+                Laptop PC
+              </Table.Cell>
+              <Table.Cell>
+                $1999
+              </Table.Cell>
+              <Table.Cell>
+                <a
+                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                  href="/tables"
+                >
+                  <p>
+                    Edit
+                  </p>
+                </a>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                Magic Mouse 2
+              </Table.Cell>
+              <Table.Cell>
+                Black
+              </Table.Cell>
+              <Table.Cell>
+                Accessories
+              </Table.Cell>
+              <Table.Cell>
+                $99
+              </Table.Cell>
+              <Table.Cell>
+                <a
+                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                  href="/tables"
+                >
+                  <p>
+                    Edit
+                  </p>
+                </a>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                <p>
+                  Google Pixel Phone
+                </p>
+              </Table.Cell>
+              <Table.Cell>
+                Gray
+              </Table.Cell>
+              <Table.Cell>
+                Phone
+              </Table.Cell>
+              <Table.Cell>
+                $799
+              </Table.Cell>
+              <Table.Cell>
+                <a
+                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                  href="/tables"
+                >
+                  <p>
+                    Edit
+                  </p>
+                </a>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                Apple Watch 5
+              </Table.Cell>
+              <Table.Cell>
+                Red
+              </Table.Cell>
+              <Table.Cell>
+                Wearables
+              </Table.Cell>
+              <Table.Cell>
+                $999
+              </Table.Cell>
+              <Table.Cell>
+                <a
+                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                  href="/tables"
+                >
+                  <p>
+                    Edit
+                  </p>
+                </a>
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
       </div>
     </div>
       

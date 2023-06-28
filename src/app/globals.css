@@ -8,6 +8,17 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+/*
+input.bg-transparent {
+  border: none !important;
+}
+input.bg-transparent:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+*/
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
