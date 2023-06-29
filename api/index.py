@@ -4,8 +4,8 @@ from digits import generate_solutions
 
 app = FastAPI()
 
-@app.get("/api/solution")   
+
+@app.get("/api/solution")
 def solution(goal: int, nums: Optional[List[int]] = Query(None)):
     print(goal, nums)
     return generate_solutions(nums, ['+', '-', '*', '/'], goal)
-    
