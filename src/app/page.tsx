@@ -6,6 +6,8 @@ import Operation from './components/Operation';
 import Goal from './components/Goal';
 import Toggle from './components/Toggle';
 import { Table } from 'flowbite-react';
+import { FaDivide, FaPlus, FaTimes, FaMinus, FaUndo } from 'react-icons/fa';
+
 
 function combine(op: string, a: number, b: number): number {
   switch (op) {
@@ -99,11 +101,11 @@ export default function Home() {
     }
   }
 
-  async function onOperationClick(op: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
+  async function onOperationClick(op: string, event: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> {
     console.log(op);
     console.log(event);
     if (!isEditable) {
-      if (op === '🔙' && (valuesHistory.length > 0) ) {
+      if (op === 'undo' && (valuesHistory.length > 0) ) {
         console.log('valuesHistory: ' + valuesHistory);
         const oldvals = valuesHistory.pop();
         if (oldvals !== undefined) {
@@ -174,31 +176,36 @@ export default function Home() {
               onNumberClick={onNumberClick} 
               handleGridValuesChange={handleGridValuesChange} />
         <div className="flex mt-6 gap-2">
-          <Operation value="+" 
-                    isEditable={isEditable} 
-                    isSelected={opsSelected === "+"} 
-                    onOperationClick={onOperationClick} />
-          <Operation value="-" 
-                    isEditable={isEditable} 
-                    isSelected={opsSelected === "-"}
-                    onOperationClick={onOperationClick} />
-          <Operation value="*" 
-                    isEditable={isEditable} 
-                    isSelected={opsSelected === "*"}
-                    onOperationClick={onOperationClick} />
-          <Operation value="/" 
-                    isEditable={isEditable} 
-                    isSelected={opsSelected === "/"} 
-                    onOperationClick={onOperationClick} />
-          <Operation value="🔙" 
-                    isEditable={isEditable} 
-                    isSelected={opsSelected === "🔙"}
-                    onOperationClick={onOperationClick} />
+          <Operation Icon={FaPlus}
+                     op="+"
+                     disabled={isEditable || !numSelected } 
+                     isSelected={opsSelected === "+"} 
+                     onOperationClick={onOperationClick} />
+          <Operation op="-" 
+                     Icon={FaMinus}           
+                     disabled={isEditable || !numSelected} 
+                     isSelected={opsSelected === "-"}
+                     onOperationClick={onOperationClick} />
+          <Operation Icon={FaTimes}
+                     op="*" 
+                     disabled={isEditable || !numSelected} 
+                     isSelected={opsSelected === "*"}
+                     onOperationClick={onOperationClick} />
+          <Operation Icon={FaDivide}
+                     op="/" 
+                     disabled={isEditable || !numSelected} 
+                     isSelected={opsSelected === "/"} 
+                     onOperationClick={onOperationClick} />
+          <Operation Icon={FaUndo}
+                     op="undo" 
+                     disabled={isEditable || valuesHistory.length === 0} 
+                     isSelected={opsSelected === "undo"}
+                     onOperationClick={onOperationClick} />
         </div>
       </div>
 
       <div className="lg:w-1/2 h-screen flex flex-col items-center justify-center">
-        <Table striped className="relative">
+        <Table striped>
           <Table.Head>
             <Table.HeadCell>
               Product name
