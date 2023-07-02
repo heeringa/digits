@@ -3,7 +3,6 @@
 import React from 'react';
 import { Button } from 'flowbite-react';
 import { IconType } from 'react-icons';
-import { blue } from 'FlowbiteColors';
 
 
 interface OperationProps {
@@ -18,7 +17,7 @@ function Operation({ disabled=true, isSelected=false, Icon, op, onOperationClick
 
 
   const basestyle = "flex items-center justify-center";
-  const color = isSelected ? "success" : "red";
+  const color = isSelected ? "success" : "purple";
 
   return (
     <div className={basestyle}>
