@@ -5,8 +5,9 @@ import Grid from './components/Grid';
 import Operation from './components/Operation';
 import Goal from './components/Goal';
 import Toggle from './components/Toggle';
-import { Table } from 'flowbite-react';
 import { FaDivide, FaPlus, FaTimes, FaMinus, FaUndo } from 'react-icons/fa';
+import { Button } from 'flowbite-react';
+//import { Results, Result } from './components/Results';
 
 
 function combine(op: string, a: number, b: number): number {
@@ -44,6 +45,15 @@ function evalDigitsForDisplay(opsstr: string[], perm: number[]): string[] {
 export default function Home() {
   
   const SIZE = 6
+  /*
+  const RESULT1: Result = {
+    insol: [1, 2, 3],
+    outsol: [4],
+    ops: ["1+2", "3+3"]
+  }
+  const RESULTS: Array<Result> = [RESULT1];
+*/
+
   const [isEditable, setEditable] = useState(false);
   const [values, setValues] = useState(Array<number | null>(SIZE).fill(null));
   const [visible, setVisible] = useState(Array<boolean>(SIZE).fill(true));
@@ -165,6 +175,8 @@ export default function Home() {
     <div className="h-screen flex flex-col lg:flex-row items-center justify-center">
       <div className="lg:w-1/2 h-screen flex flex-col items-center justify-center">
         <Toggle isEditable={isEditable} onToggleChange={handleToggleChange}></Toggle>
+        {/* <Button onClick={event => onOperationClick(op, event)}>Submit</Button> */}
+
         <div className="mb-10">
         <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
         </div>      
@@ -204,156 +216,11 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="lg:w-1/2 h-screen flex flex-col items-center justify-center">
-        <Table striped>
-          <Table.Head>
-            <Table.HeadCell>
-              Product name
-            </Table.HeadCell>
-            <Table.HeadCell>
-              Color
-            </Table.HeadCell>
-            <Table.HeadCell>
-              Category
-            </Table.HeadCell>
-            <Table.HeadCell>
-              Price
-            </Table.HeadCell>
-            <Table.HeadCell>
-              <span className="sr-only">
-                Edit
-              </span>
-            </Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                Apple MacBook Pro 17 &quot;
-              </Table.Cell>
-              <Table.Cell>
-                Sliver
-              </Table.Cell>
-              <Table.Cell>
-                Laptop
-              </Table.Cell>
-              <Table.Cell>
-                $2999
-              </Table.Cell>
-              <Table.Cell>
-                <a
-                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  href="/tables"
-                >
-                  <p>
-                    Edit
-                  </p>
-                </a>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                <p>
-                  Microsoft Surface Pro
-                </p>
-              </Table.Cell>
-              <Table.Cell>
-                White
-              </Table.Cell>
-              <Table.Cell>
-                Laptop PC
-              </Table.Cell>
-              <Table.Cell>
-                $1999
-              </Table.Cell>
-              <Table.Cell>
-                <a
-                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  href="/tables"
-                >
-                  <p>
-                    Edit
-                  </p>
-                </a>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                Magic Mouse 2
-              </Table.Cell>
-              <Table.Cell>
-                Black
-              </Table.Cell>
-              <Table.Cell>
-                Accessories
-              </Table.Cell>
-              <Table.Cell>
-                $99
-              </Table.Cell>
-              <Table.Cell>
-                <a
-                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  href="/tables"
-                >
-                  <p>
-                    Edit
-                  </p>
-                </a>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                <p>
-                  Google Pixel Phone
-                </p>
-              </Table.Cell>
-              <Table.Cell>
-                Gray
-              </Table.Cell>
-              <Table.Cell>
-                Phone
-              </Table.Cell>
-              <Table.Cell>
-                $799
-              </Table.Cell>
-              <Table.Cell>
-                <a
-                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  href="/tables"
-                >
-                  <p>
-                    Edit
-                  </p>
-                </a>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                Apple Watch 5
-              </Table.Cell>
-              <Table.Cell>
-                Red
-              </Table.Cell>
-              <Table.Cell>
-                Wearables
-              </Table.Cell>
-              <Table.Cell>
-                $999
-              </Table.Cell>
-              <Table.Cell>
-                <a
-                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  href="/tables"
-                >
-                  <p>
-                    Edit
-                  </p>
-                </a>
-              </Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
+{/*       <div className="lg:w-1/2 h-screen flex flex-col items-center justify-center">
+        <Results values={RESULTS} />
       </div>
-    </div>
+ */}    
+ </div>
       
     
   );
