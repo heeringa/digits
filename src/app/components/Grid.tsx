@@ -7,7 +7,7 @@ interface GridProps {
   isEditable: boolean;
   visible: Array<boolean>;
   selected: number | null;
-  onNumberClick: (index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onNumberClick: (index: number) => void;
   handleGridValuesChange: (index: number, value: number | null) => void;
 }
 

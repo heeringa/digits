@@ -73,7 +73,7 @@ export default function Home() {
     setOpsSelected(null);
   }
 
-  async function onNumberClick(index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>): Promise<void> {
+  async function onNumberClick(index: number): Promise<void> {
     if (!isEditable) {
       if (numSelected === null || (numSelected !== index && opsSelected === null)) {
         setNumSelected(index);

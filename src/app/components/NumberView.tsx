@@ -8,7 +8,7 @@ interface NumberProps {
   isSelected: boolean;
   isVisible: boolean;
   
-  onNumberClick: (index: number, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onNumberClick: (index: number) => void;
   onChange: (index: number, value: number | null) => void;
 
 }
@@ -25,7 +25,7 @@ function NumberView({ index, value, isEditable=true, isSelected=false, isVisible
   return (
     <div className={style}
          id={`pos-${index}`}
-         onClick={event => onNumberClick(index, event)}>
+         onClick={() => onNumberClick(index)}>
      <input className={"border-none bg-transparent text-center text-3xl w-20 focus:ring-0 focus:border-none  " + (isEditable ? "" : " cursor-default select-none")} 
             type="number"
             placeholder = ""
