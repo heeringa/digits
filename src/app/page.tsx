@@ -147,8 +147,8 @@ export default function Home() {
     console.log(response);
     const json = await response.json();
     console.log(json);
-    let sols: Array<Result> = [];
-    for (let val of json) {
+    const sols: Array<Result> = [];
+    for (const val of json) {
       sols.push({insol: val.insol, outsol: val.outsol, ops: val.ops});
     } 
     /* for (let [key, value] of Object.entries(json)) {
