@@ -128,18 +128,13 @@ export default function Home() {
 
   async function handleSubmit(): Promise<void> {
     
-    //event.preventDefault();
-    //console.log(event);
-
-    
-    //const data = new FormData(event.currentTarget);
-    //console.log(data);
     const goal = goalValue;
     console.log(goal);
     
-    console.log(values);
-
-    const inputsAsString = values.map(i => `nums=${i}`).join('&');
+    const visibleValues = values.filter((_, index) => visible[index]);
+    console.log(visibleValues);
+    
+    const inputsAsString = visibleValues.map(i => `nums=${i}`).join('&');
     console.log(inputsAsString); // logs "input0=value0&input1=value1&..."
   
     const url = `/api/shortsolution?goal=${goal}&${inputsAsString}`;
@@ -163,7 +158,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      <div className="w-full flex justify-end items-center px-4 lg:px-0 mb-0 mt-20 mr-20">
+      <div className="flex flex-row-reverse px-4 lg:px-0 mb-0 ml-20 mt-10 mr-20">
         <Toggle isEditable={isEditable} onToggleChange={handleToggleChange} />
         <Button className="mr-5" onClick={event => handleSubmit()}>Find Solutions</Button>
       </div>    
