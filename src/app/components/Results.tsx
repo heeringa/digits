@@ -12,7 +12,11 @@ function ResultRow({insol, outsol, ops}: Result): JSX.Element {
   return (
     <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-      <Badge color="gray">{insol.join(" ")}</Badge>
+      <div className="flex flex-wrap">
+        {insol.map((x, index) => (
+          <Badge className="ml-1 mr-1" key={index} color="gray">{x}</Badge>
+        ))}
+      </div>
     </Table.Cell>
     <Table.Cell>
       {outsol.join(" ")}
