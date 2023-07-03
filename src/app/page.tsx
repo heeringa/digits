@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import Grid from './components/Grid';
 import Operation from './components/Operation';
 import Goal from './components/Goal';
@@ -23,19 +23,6 @@ function combine(op: string, a: number, b: number): number {
 export default function Home() {
   
   const SIZE = 6
-  const R1: Result = {
-    insol: [1, 2, 3],
-    outsol: [4],
-    ops: ["1+2", "3+3"]
-  }
-  const R2: Result = {
-    insol: [1, 2, 3, 4],
-    outsol: [5, 6],
-    ops: ["3+4", "1+2", "7+3"]
-  }
-
-  const RS: Array<Result> = [R1, R2];
-
   const [isEditable, setEditable] = useState(false);
   const [values, setValues] = useState<Array<number | null>>([3,5,12,14,15,17]);
   const [visible, setVisible] = React.useState<Array<boolean>>(Array(SIZE).fill(true));
