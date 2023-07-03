@@ -9,7 +9,7 @@ interface ToggleProps {
 function Toggle({isEditable, onToggleChange}: ToggleProps) {
 
   return (
-    <div className="flex items-center justify-center w-full">
+    <div className="flex items-center mr-5">
       <label htmlFor="toggle" className="flex items-center cursor-pointer">
         <div className="text-lg mr-2">
             Edit Mode

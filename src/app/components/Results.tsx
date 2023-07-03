@@ -1,4 +1,5 @@
 import { Table } from 'flowbite-react';
+import { Badge } from 'flowbite-react';
 
 export interface Result {
   insol: Array<number>;
@@ -11,13 +12,17 @@ function ResultRow({insol, outsol, ops}: Result): JSX.Element {
   return (
     <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-      {insol.join(" ")}
+      <Badge color="gray">{insol.join(" ")}</Badge>
     </Table.Cell>
     <Table.Cell>
       {outsol.join(" ")}
     </Table.Cell>
     <Table.Cell>
-      {ops.join(" ")}
+      <div className="flex flex-wrap">
+      {ops.map((op, index) => (
+        <Badge className="ml-1 mr-1" key={index} color="gray">{op}</Badge>
+      ))}
+      </div>
     </Table.Cell>
     <Table.Cell>
       <a
@@ -34,15 +39,15 @@ function ResultRow({insol, outsol, ops}: Result): JSX.Element {
   )
 }
 
-function Results( {results}: {results: Array<Result>}): JSX.Element {
+export function Results( {results}: {results: Array<Result>}): JSX.Element {
   return (
         <Table striped>
           <Table.Head>
             <Table.HeadCell>
-              Numbers Used
+              Values Used
             </Table.HeadCell>
             <Table.HeadCell>
-              Numbers Remaining
+              Values Remaining
             </Table.HeadCell>
             <Table.HeadCell>
               Operations
@@ -54,11 +59,11 @@ function Results( {results}: {results: Array<Result>}): JSX.Element {
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {results.map((result: Result) => ResultRow(result))}
+            {results.map((result: Result, index: number) => (
+              <ResultRow key={index} insol={result.insol} outsol={result.outsol} ops={result.ops} />
+            ))}
           </Table.Body>
         </Table>
     );
   }
-
-  export default Results;
   

@@ -7,7 +7,7 @@ import Goal from './components/Goal';
 import Toggle from './components/Toggle';
 import { FaDivide, FaPlus, FaTimes, FaMinus, FaUndo } from 'react-icons/fa';
 import { Button } from 'flowbite-react';
-//import { Results, Result } from './components/Results';
+import { Results, Result } from './components/Results';
 
 
 function combine(op: string, a: number, b: number): number {
@@ -20,48 +20,31 @@ function combine(op: string, a: number, b: number): number {
   }
 }
 
-/* 
-function evalDigitsForDisplay(opsstr: string[], perm: number[]): string[] {
-  if (opsstr.length !== perm.length - 1) {
-      throw new Error("Invalid input. opsstr length must be equal to perm length - 1.");
-  }
-
-  const history: string[] = [];
-  let prev: number = perm[0];
-
-  for (let i = 0; i < opsstr.length; i++) {
-      const op = opsstr[i];
-      const x = perm[i + 1];
-      const y = combine(op, prev, x);
-      history.push(`${prev} ${op} ${x} = ${y}`);
-      prev = y;
-  }
-
-  return history;
-}
- */
-
-
 export default function Home() {
   
   const SIZE = 6
-  /*
-  const RESULT1: Result = {
+  const R1: Result = {
     insol: [1, 2, 3],
     outsol: [4],
     ops: ["1+2", "3+3"]
   }
-  const RESULTS: Array<Result> = [RESULT1];
-*/
+  const R2: Result = {
+    insol: [1, 2, 3, 4],
+    outsol: [5, 6],
+    ops: ["3+4", "1+2", "7+3"]
+  }
+
+  const RS: Array<Result> = [R1, R2];
 
   const [isEditable, setEditable] = useState(false);
-  const [values, setValues] = useState(Array<number | null>(SIZE).fill(null));
-  const [visible, setVisible] = useState(Array<boolean>(SIZE).fill(true));
+  const [values, setValues] = useState<Array<number | null>>([3,5,12,14,15,17]);
+  const [visible, setVisible] = React.useState<Array<boolean>>(Array(SIZE).fill(true));
   const [numSelected, setNumSelected] = useState<number | null>(null);
   const [opsSelected, setOpsSelected] = useState<string |null>(null);
-  const [goalValue, setGoalValue] = useState<number | null>(42);
+  const [goalValue, setGoalValue] = useState<number | null>(492);
   const [valuesHistory, setValuesHistory] = useState<Array<number | null>[]>([]);
   const [visibilityHistory, setVisibilityHistory] = useState<Array<boolean>[]>([]);
+  const [solutions, setSolutions] = useState<Array<Result>>([]);
 
   function massage(n: number | null): number | null {
     return (n !== null && !isNaN(n)) ? n : null;
@@ -84,6 +67,7 @@ export default function Home() {
   }
 
   async function onNumberClick(index: number): Promise<void> {
+    console.log(index);
     if (!isEditable) {
       if (numSelected === null || (numSelected !== index && opsSelected === null)) {
         setNumSelected(index);
@@ -142,86 +126,95 @@ export default function Home() {
     }
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
+  async function handleSubmit(): Promise<void> {
     
-    event.preventDefault();
-    console.log(event);
+    //event.preventDefault();
+    //console.log(event);
 
-    /*
-    const data = new FormData(event.currentTarget);
-    console.log(data);
-    const goal = data.get('goal');
-    data.delete('goal')
+    
+    //const data = new FormData(event.currentTarget);
+    //console.log(data);
+    const goal = goalValue;
     console.log(goal);
     
-    console.log(Array.from(data.entries()));
+    console.log(values);
 
-    const inputsAsString = Array.from(data.values()).map(i => `nums=${i}`).join('&');
+    const inputsAsString = values.map(i => `nums=${i}`).join('&');
     console.log(inputsAsString); // logs "input0=value0&input1=value1&..."
   
-    const url = `/api/solution?goal=${goal}&${inputsAsString}`;
+    const url = `/api/shortsolution?goal=${goal}&${inputsAsString}`;
     const response = await fetch(url);
+    console.log(response);
     const json = await response.json();
     console.log(json);
-    for (let [key, value] of Object.entries(json)) {
+    let sols: Array<Result> = [];
+    for (let val of json) {
+      sols.push({insol: val.insol, outsol: val.outsol, ops: val.ops});
+    } 
+    /* for (let [key, value] of Object.entries(json)) {
+      sols.push({insol: [], outsol: key.split(",").map(Number), ops: value});
       console.log(`Key: ${key}, Value: ${value}`);
+      console.log(`Key: ${key}, ${key.split(",").map(Number)}`);
     }
-    setApiResponse(json);
-    console.log(json);   
-    */ 
+     */
+    setSolutions(sols);
+    console.log(`SOLUTIONS: ${solutions}`);
   }
 
   return (
-    <div className="h-screen flex flex-col lg:flex-row items-center justify-center">
-      <div className="lg:w-1/2 h-screen flex flex-col items-center justify-center">
-        <Toggle isEditable={isEditable} onToggleChange={handleToggleChange}></Toggle>
-        {/* <Button onClick={event => onOperationClick(op, event)}>Submit</Button> */}
+    <div className="flex flex-col">
+      <div className="w-full flex justify-end items-center px-4 lg:px-0 mb-0 mt-20 mr-20">
+        <Toggle isEditable={isEditable} onToggleChange={handleToggleChange} />
+        <Button className="mr-5" onClick={event => handleSubmit()}>Find Solutions</Button>
+      </div>    
 
-        <div className="mb-10">
-        <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
-        </div>      
-        <Grid values={values} 
-              numColumns={3} 
-              isEditable={isEditable}
-              visible={visible}
-              selected={numSelected} 
-              onNumberClick={onNumberClick} 
-              handleGridValuesChange={handleGridValuesChange} />
-        <div className="flex mt-6 gap-2">
-          <Operation Icon={FaPlus}
-                     op="+"
-                     disabled={isEditable || !numSelected } 
-                     isSelected={opsSelected === "+"} 
-                     onOperationClick={onOperationClick} />
-          <Operation op="-" 
-                     Icon={FaMinus}           
-                     disabled={isEditable || !numSelected} 
-                     isSelected={opsSelected === "-"}
-                     onOperationClick={onOperationClick} />
-          <Operation Icon={FaTimes}
-                     op="*" 
-                     disabled={isEditable || !numSelected} 
-                     isSelected={opsSelected === "*"}
-                     onOperationClick={onOperationClick} />
-          <Operation Icon={FaDivide}
-                     op="/" 
-                     disabled={isEditable || !numSelected} 
-                     isSelected={opsSelected === "/"} 
-                     onOperationClick={onOperationClick} />
-          <Operation Icon={FaUndo}
-                     op="undo" 
-                     disabled={isEditable || valuesHistory.length === 0} 
-                     isSelected={opsSelected === "undo"}
-                     onOperationClick={onOperationClick} />
+      <div className="flex flex-col lg:flex-row w-full">
+        <div className="lg:w-1/2 flex flex-col items-center">
+          <div className="mb-10">
+          <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
+          </div>      
+          <Grid values={values} 
+                numColumns={3} 
+                isEditable={isEditable}
+                visible={visible}
+                selected={numSelected} 
+                onNumberClick={onNumberClick} 
+                handleGridValuesChange={handleGridValuesChange} />
+          <div className="flex mt-6 gap-2">
+            <Operation Icon={FaPlus}
+                      op="+"
+                      disabled={isEditable || numSelected === null } 
+                      isSelected={opsSelected === "+"} 
+                      onOperationClick={onOperationClick} />
+            <Operation op="-" 
+                      Icon={FaMinus}           
+                      disabled={isEditable || numSelected === null } 
+                      isSelected={opsSelected === "-"}
+                      onOperationClick={onOperationClick} />
+            <Operation Icon={FaTimes}
+                      op="*" 
+                      disabled={isEditable || numSelected === null }
+                      isSelected={opsSelected === "*"}
+                      onOperationClick={onOperationClick} />
+            <Operation Icon={FaDivide}
+                      op="/" 
+                      disabled={isEditable || numSelected === null }
+                      isSelected={opsSelected === "/"} 
+                      onOperationClick={onOperationClick} />
+            <Operation Icon={FaUndo}
+                      op="undo" 
+                      disabled={isEditable || valuesHistory.length === 0} 
+                      isSelected={opsSelected === "undo"}
+                      onOperationClick={onOperationClick} />
+          </div>
         </div>
-      </div>
 
-{/*       <div className="lg:w-1/2 h-screen flex flex-col items-center justify-center">
-        <Results values={RESULTS} />
+        <div className="lg:w-1/2 flex flex-col items-center mt-5">
+          <Results results={solutions} />
+        </div>
+  
       </div>
- */}    
- </div>
-      
-    
+    </div>
+  
   );
 }
