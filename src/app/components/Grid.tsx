@@ -7,11 +7,12 @@ interface GridProps {
   isEditable: boolean;
   visible: Array<boolean>;
   selected: number | null;
+  composites: Array<boolean>;
   onNumberClick: (index: number) => void;
   handleGridValuesChange: (index: number, value: number | null) => void;
 }
 
-function Grid({ values, numColumns, isEditable, visible, selected, onNumberClick, handleGridValuesChange }: GridProps): JSX.Element {  
+function Grid({ values, numColumns, isEditable, visible, selected, composites, onNumberClick, handleGridValuesChange }: GridProps): JSX.Element {  
   
   //const style = `grid grid-cols-${numColumns} gap-4`;
   const style = "grid grid-cols-3 gap-4";
@@ -22,7 +23,7 @@ function Grid({ values, numColumns, isEditable, visible, selected, onNumberClick
           key={index}
           index={index} 
           value={value}
-          isEditable={isEditable}
+          isEditable={isEditable && !composites[index]}
           isSelected={selected === index}
           isVisible={visible[index]} 
           onNumberClick={onNumberClick}

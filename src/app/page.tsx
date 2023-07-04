@@ -32,6 +32,8 @@ export default function Home() {
   const [valuesHistory, setValuesHistory] = useState<Array<number | null>[]>([]);
   const [visibilityHistory, setVisibilityHistory] = useState<Array<boolean>[]>([]);
   const [solutions, setSolutions] = useState<Array<Result>>([]);
+  const [composites, setComposites] = useState<Array<boolean>>(Array(SIZE).fill(false));
+  const [compositesHistory, setCompositesHistory] = useState<Array<boolean>[]>([]);
 
   function massage(n: number | null): number | null {
     return (n !== null && !isNaN(n)) ? n : null;
@@ -77,6 +79,14 @@ export default function Home() {
           setVisible(v);
           setNumSelected(null);
           setOpsSelected(null);
+
+          // update the composite history to include the current composites
+          setCompositesHistory([...compositesHistory, composites]);
+          // copy the composites and update the entry of the new target
+          const compositesCopy = [...composites]
+          compositesCopy[index] = true;
+          setComposites(compositesCopy);
+
         }
       }
     }
@@ -93,12 +103,21 @@ export default function Home() {
           setValues(oldvals);
         }
         console.log('valuesHistory: ' + valuesHistory);    
+        
         console.log('visibilityHistory: ' + visibilityHistory);            
         const oldviz = visibilityHistory.pop();
         if (oldviz !== undefined) {
           setVisible(oldviz);
         }
         console.log('visibilityHistory: ' + visibilityHistory);
+
+        console.log('compositesHistory: ' + compositesHistory);            
+        const oldcomps = compositesHistory.pop();
+        if (oldcomps !== undefined) {
+          setComposites(oldcomps);
+        }
+        console.log('compositesHistory: ' + compositesHistory);            
+
         setOpsSelected(null);
         setNumSelected(null);
       } else {
@@ -115,34 +134,18 @@ export default function Home() {
 
   async function handleSubmit(): Promise<void> {
     
-    const goal = goalValue;
-    console.log(goal);
-    
-    const visibleValues = values.filter((_, index) => visible[index]);
-    console.log(visibleValues);
-    
-    const inputsAsString = visibleValues.map(i => `nums=${i}`).join('&');
-    console.log(inputsAsString); // logs "input0=value0&input1=value1&..."
-  
-    const url = `/api/shortsolution?goal=${goal}&${inputsAsString}`;
+    const visibleValues = values.filter((_, index) => visible[index]);    
+    const inputsAsString = visibleValues.map(i => `nums=${i}`).join('&');  
+    const url = `/api/shortsolution?goal=${goalValue}&${inputsAsString}`;
     const response = await fetch(url);
-    console.log(response);
     const json = await response.json();
-    console.log(json);
     const sols: Array<Result> = [];
     for (const val of json) {
       const ins: number[] = values.filter((value, index): value is number => 
         (!val.outsol.includes(value) && value !== null));
       sols.push({insol: ins, outsol: val.outsol, ops: val.ops});
     } 
-    /* for (let [key, value] of Object.entries(json)) {
-      sols.push({insol: [], outsol: key.split(",").map(Number), ops: value});
-      console.log(`Key: ${key}, Value: ${value}`);
-      console.log(`Key: ${key}, ${key.split(",").map(Number)}`);
-    }
-     */
     setSolutions(sols);
-    console.log(`SOLUTIONS: ${solutions}`);
   }
 
   return (
@@ -161,7 +164,8 @@ export default function Home() {
                 numColumns={3} 
                 isEditable={isEditable}
                 visible={visible}
-                selected={numSelected} 
+                selected={numSelected}
+                composites={composites}
                 onNumberClick={onNumberClick} 
                 handleGridValuesChange={handleGridValuesChange} />
           <div className="flex mt-6 gap-2">
