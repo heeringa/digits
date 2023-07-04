@@ -131,9 +131,9 @@ export default function Home() {
     console.log(json);
     const sols: Array<Result> = [];
     for (const val of json) {
-      const ins = values.filter((value, index) => !val.outsol.includes(value));
+      const ins: number[] = values.filter((value, index): value is number => 
+        (!val.outsol.includes(value) && value !== null));
       sols.push({insol: ins, outsol: val.outsol, ops: val.ops});
-
     } 
     /* for (let [key, value] of Object.entries(json)) {
       sols.push({insol: [], outsol: key.split(",").map(Number), ops: value});
