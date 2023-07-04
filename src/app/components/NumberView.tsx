@@ -15,13 +15,11 @@ interface NumberProps {
 
 function NumberView({ index, value, isEditable=true, isSelected=false, isVisible=true, onNumberClick, onChange }:NumberProps): React.JSX.Element {
 
-  const basestyle = "flex items-center justify-center h-24 w-24 rounded-3xl border border-gray-800";
-  let style = isEditable ? `${basestyle} ${styles.pulse}` : `${basestyle}`;
+  const basestyle = "flex items-center justify-center h-24 w-24 rounded-3xl border";
+  let style = isEditable ? `${basestyle} ${styles.pulse} border-emerald-200` : `${basestyle} border-gray-800`;
   style = isSelected ? `${style} bg-blue-500 text-white` : `${style} bg-white text-black`;
   style = isVisible ? `${style}` : `${style} opacity-0 pointer-events-none`;
   
-
-  // focus:ring-2 focus:ring-gray-200
   return (
     <div className={style}
          id={`pos-${index}`}
@@ -31,8 +29,7 @@ function NumberView({ index, value, isEditable=true, isSelected=false, isVisible
             placeholder = ""
             readOnly={!isEditable} 
             value={value === null ? "" : value}
-            onChange={event => onChange(index, event.target.valueAsNumber)}
-            />
+            onChange={event => onChange(index, event.target.valueAsNumber)}/>
     </div>
   );
 }
