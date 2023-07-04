@@ -1,5 +1,7 @@
 from typing import List, Optional
 from fastapi import FastAPI, Query
+import sys
+print(sys.path)
 from digits import generate_solutions
 
 app = FastAPI()
