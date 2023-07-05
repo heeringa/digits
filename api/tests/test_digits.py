@@ -1,5 +1,5 @@
 import pytest
-from digits import combine, generate_solutions
+from index import combine, generate_solutions
 
 
 def test_combine():
