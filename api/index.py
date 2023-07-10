@@ -5,14 +5,21 @@ from digits import generate_solutions
 app = FastAPI()
 
 
-@app.get("/api/shortsolution")
-def solution(goal: int, nums: Optional[List[int]] = Query(None)):
+def ops_to_str(ops) -> List[str]:
+    return ["{} {} {}".format(op[1], op[0], op[2]) for op in ops]
 
-    def ops_to_str(ops) -> List[str]:
-        print("OPS = {}".format(ops))
-        return ["{} {} {}".format(op[1], op[0], op[2]) for op in ops]
+@app.get("/api/allsolutions")
+def allsolutions(goal: int, nums: Optional[List[int]] = Query(None)):
+    sol = generate_solutions(nums, ['+', '-', '*', '/'], goal)
+    sol2 = []
+    for k, v in sol.items():
+        sol2.extend([{"insol": [],
+                    "outsol": k,
+                    "ops": ops_to_str(ops)} for ops in v ])
+    return sol2
 
-    print(goal, nums)
+@app.get("/api/shortsolutions")
+def shortsolutions(goal: int, nums: Optional[List[int]] = Query(None)):
     sol = generate_solutions(nums, ['+', '-', '*', '/'], goal)
     sol2 = [{"insol": [],
              "outsol": k,

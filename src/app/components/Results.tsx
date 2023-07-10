@@ -1,5 +1,7 @@
 import { Table } from 'flowbite-react';
 import { Badge } from 'flowbite-react';
+import { MdReadMore } from 'react-icons/md';
+import Link from 'next/link';
 
 export interface Result {
   insol: Array<number>;
@@ -7,7 +9,11 @@ export interface Result {
   ops: Array<string>;
 }
 
-function ResultRow({insol, outsol, ops}: Result): JSX.Element {
+interface ResultWithUrl extends Result {
+  url: string; 
+}
+
+function ResultRow({insol, outsol, ops, url}: ResultWithUrl): JSX.Element {
   
   return (
     <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
@@ -29,21 +35,17 @@ function ResultRow({insol, outsol, ops}: Result): JSX.Element {
       </div>
     </Table.Cell>
     <Table.Cell>
-      <a
-        className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-        href="/tables"
-      >
-        <p>
-          Edit
-        </p>
-      </a>
+      <Link href={url}>
+      <MdReadMore size="2em"/>
+      </Link>
+
     </Table.Cell>
-  </Table.Row>
+    </Table.Row>
 
   )
 }
 
-export function Results( {results}: {results: Array<Result>}): JSX.Element {
+export function Results( {results, url}: {results: Array<Result>, url: string}): JSX.Element {
   return (
         <Table striped>
           <Table.Head>
@@ -57,14 +59,16 @@ export function Results( {results}: {results: Array<Result>}): JSX.Element {
               Operations
             </Table.HeadCell>
             <Table.HeadCell>
-              <span className="sr-only">
-                Edit
-              </span>
+              More Solutions
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {results.map((result: Result, index: number) => (
-              <ResultRow key={index} insol={result.insol} outsol={result.outsol} ops={result.ops} />
+              <ResultRow key={index} 
+                         insol={result.insol} 
+                         outsol={result.outsol} 
+                         ops={result.ops} 
+                         url={url} />
             ))}
           </Table.Body>
         </Table>

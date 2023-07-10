@@ -8,21 +8,15 @@ import Toggle from './components/Toggle';
 import { FaDivide, FaPlus, FaTimes, FaMinus, FaUndo } from 'react-icons/fa';
 import { Button } from 'flowbite-react';
 import { Results, Result } from './components/Results';
+import { createSolutionUrl, combine } from './utils/general';
 
-
-function combine(op: string, a: number, b: number): number {
-  switch (op) {
-      case '+': return a + b;
-      case '-': return a - b;
-      case '*': return a * b;
-      case '/': return a / b;
-      default: throw new Error("Unsupported operation");
-  }
-}
 
 export default function Home() {
   
   const SIZE = 6
+  const apiURL = "/api/shortsolutions"
+  const allLink = "/solutionspace"
+
   const [isEditable, setEditable] = useState(false);
   const [values, setValues] = useState<Array<number | null>>([3,5,12,14,15,17]);
   const [visible, setVisible] = React.useState<Array<boolean>>(Array(SIZE).fill(true));
@@ -34,6 +28,7 @@ export default function Home() {
   const [solutions, setSolutions] = useState<Array<Result>>([]);
   const [composites, setComposites] = useState<Array<boolean>>(Array(SIZE).fill(false));
   const [compositesHistory, setCompositesHistory] = useState<Array<boolean>[]>([]);
+  const [allLinkBase, setAllLinkBase] = useState<string>("");
 
   function massage(n: number | null): number | null {
     return (n !== null && !isNaN(n)) ? n : null;
@@ -135,8 +130,11 @@ export default function Home() {
   async function handleSubmit(): Promise<void> {
     
     const visibleValues = values.filter((_, index) => visible[index]);    
-    const inputsAsString = visibleValues.map(i => `nums=${i}`).join('&');  
-    const url = `/api/shortsolution?goal=${goalValue}&${inputsAsString}`;
+    const url = createSolutionUrl(apiURL, 
+                                  goalValue as number, 
+                                  visibleValues as number[]);
+
+                            
     const response = await fetch(url);
     const json = await response.json();
     const sols: Array<Result> = [];
@@ -146,6 +144,12 @@ export default function Home() {
       sols.push({insol: ins, outsol: val.outsol, ops: val.ops});
     } 
     setSolutions(sols);
+
+    const baseurl = createSolutionUrl(allLink, 
+      goalValue as number, 
+      visibleValues as number[]);
+
+    setAllLinkBase(baseurl);
   }
 
   return (
@@ -198,7 +202,7 @@ export default function Home() {
         </div>
 
         <div className="lg:w-1/2 flex flex-col items-center mt-5">
-          <Results results={solutions} />
+          <Results results={solutions} url={allLinkBase} />
         </div>
   
       </div>
