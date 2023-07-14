@@ -9,7 +9,7 @@ import { FaDivide, FaPlus, FaTimes, FaMinus, FaUndo } from 'react-icons/fa';
 import { Button } from 'flowbite-react';
 import { Results, Result } from './components/Results';
 import { createSolutionUrl, combine } from './utils/general';
-
+import { useSpringRef, SpringRef } from 'react-spring';
 
 export default function Home() {
   
@@ -29,6 +29,8 @@ export default function Home() {
   const [composites, setComposites] = useState<Array<boolean>>(Array(SIZE).fill(false));
   const [compositesHistory, setCompositesHistory] = useState<Array<boolean>[]>([]);
   const [allLinkBase, setAllLinkBase] = useState<string>("");
+  const [springRefs, setSpringRefs] = useState<Array<SpringRef>>(Array.from({ length: SIZE }, () => useSpringRef()));
+  
 
   function massage(n: number | null): number | null {
     return (n !== null && !isNaN(n)) ? n : null;
@@ -61,27 +63,52 @@ export default function Home() {
       } else if (numSelected !== null && opsSelected !== null) {
         const x = values[numSelected]
         const y = values[index]
-        if (opsSelected === '/' && (y == 0 || (x !== null && y!== null && x % y !== 0))) {
+        if (opsSelected === '/' && (y === 0 || (x !== null && y!== null && x % y !== 0))) {
           setOpsSelected(null);
         } else if (x !== null && y !== null) {
-          setValuesHistory([...valuesHistory, values]);
-          setVisibilityHistory([...visibilityHistory, visible]);
-          const vals = [...values];
-          vals[index] = combine(opsSelected, x, y);
-          setValues(vals);
-          const v = [...visible];
-          v[numSelected] = false;
-          setVisible(v);
-          setNumSelected(null);
-          setOpsSelected(null);
+          console.log(x);
+          console.log(y);
+          const startPosEl = document.getElementById(`pos-${numSelected}`);
+          const endPosEl = document.getElementById(`pos-${index}`);
+          console.log(startPosEl);
+          console.log(endPosEl);  
+          if (startPosEl && endPosEl) {
+            const startPosRect = startPosEl.getBoundingClientRect();
+            const endPosRect = endPosEl.getBoundingClientRect();
+            // setStartPos({ x: 0, y: 0 });
+            const endPos = { x: endPosRect.x - startPosRect.x, y: endPosRect.y - startPosRect.y };
+            console.log(endPos);
+            //to: { transform: `translate(${endPos.x}px, ${endPos.y}px)` },
+            springRefs[numSelected].start({
+              to: {x: endPos.x, y: endPos.y},
+              config: { tension: 280, friction: 60, duration: 500},
+              onRest: () => {
+                setValuesHistory([...valuesHistory, values]);
+                setVisibilityHistory([...visibilityHistory, visible]);
+                const vals = [...values];
+                vals[index] = combine(opsSelected, x, y);
+                setValues(vals);
+                const v = [...visible];
+                v[numSelected] = false;
+                setVisible(v);
+                setNumSelected(null);
+                setOpsSelected(null);
 
-          // update the composite history to include the current composites
-          setCompositesHistory([...compositesHistory, composites]);
-          // copy the composites and update the entry of the new target
-          const compositesCopy = [...composites]
-          compositesCopy[index] = true;
-          setComposites(compositesCopy);
+                // update the composite history to include the current composites
+                setCompositesHistory([...compositesHistory, composites]);
+                // copy the composites and update the entry of the new target
+                const compositesCopy = [...composites]
+                compositesCopy[index] = true;
+                setComposites(compositesCopy);
 
+                // move the target to the old position
+                springRefs[numSelected].start({
+                  to: { x: 0, y: 0 },
+                  config: { duration: 0 }, // Instant transition
+                });
+              }
+            });
+          }
         }
       }
     }
@@ -165,6 +192,7 @@ export default function Home() {
           <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
           </div>      
           <Grid values={values} 
+                springRefs={springRefs}
                 numColumns={3} 
                 isEditable={isEditable}
                 visible={visible}
