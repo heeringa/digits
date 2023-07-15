@@ -52,10 +52,13 @@ export default function Home() {
     setOpsSelected(null);
   }
 
+  function shouldHighlight(index: number): boolean {
+    return numSelected !== null || (numSelected !== index && opsSelected === null);
+  }
   async function onNumberClick(index: number): Promise<void> {
     console.log(index);
     if (!isEditable) {
-      if (numSelected === null || (numSelected !== index && opsSelected === null)) {
+      if (shouldHighlight(index)) {
         setNumSelected(index);
       } else if (numSelected === index) {
         setNumSelected(null);
@@ -66,12 +69,8 @@ export default function Home() {
         if (opsSelected === '/' && (y === 0 || (x !== null && y!== null && x % y !== 0))) {
           setOpsSelected(null);
         } else if (x !== null && y !== null) {
-          console.log(x);
-          console.log(y);
           const startPosEl = document.getElementById(`pos-${numSelected}`);
           const endPosEl = document.getElementById(`pos-${index}`);
-          console.log(startPosEl);
-          console.log(endPosEl);  
           if (startPosEl && endPosEl) {
             const startPosRect = startPosEl.getBoundingClientRect();
             const endPosRect = endPosEl.getBoundingClientRect();
@@ -81,7 +80,7 @@ export default function Home() {
             //to: { transform: `translate(${endPos.x}px, ${endPos.y}px)` },
             springRefs[numSelected].start({
               to: {x: endPos.x, y: endPos.y},
-              config: { tension: 280, friction: 60, duration: 500},
+              config: { tension: 280, friction: 60, duration: 300},
               onRest: () => {
                 setValuesHistory([...valuesHistory, values]);
                 setVisibilityHistory([...visibilityHistory, visible]);
