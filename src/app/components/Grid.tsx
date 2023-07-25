@@ -4,17 +4,16 @@ import { SpringRef } from 'react-spring';
 
 interface GridProps {
   values: Array<number | null>;
-  springRefs: Array<SpringRef>,
   numColumns: number;
   isEditable: boolean;
   visible: Array<boolean>;
   selected: number | null;
   composites: Array<boolean>;
-  onNumberClick: (index: number) => void;
+  onNumberClick: (index: number, springRef: SpringRef) => Promise<void>
   handleGridValuesChange: (index: number, value: number | null) => void;
 }
 
-function Grid({ values, springRefs, numColumns, isEditable, visible, selected, composites, onNumberClick, handleGridValuesChange }: GridProps): JSX.Element {  
+function Grid({ values, numColumns, isEditable, visible, selected, composites, onNumberClick, handleGridValuesChange }: GridProps): JSX.Element {  
   
 
   //const style = `grid grid-cols-${numColumns} gap-4`;
@@ -26,7 +25,6 @@ function Grid({ values, springRefs, numColumns, isEditable, visible, selected, c
           key={index}
           index={index} 
           value={value}
-          springRef={springRefs[index]}
           isEditable={isEditable && !composites[index]}
           isSelected={selected === index}
           isVisible={visible[index]} 
