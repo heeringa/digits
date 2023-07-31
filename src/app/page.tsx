@@ -12,6 +12,22 @@ import { createSolutionUrl, combine } from './utils/general';
 import { SpringRef } from 'react-spring';
 
 
+function randomInstance(n: number, lower: number, upper: number): number[] {
+  
+  if (n > upper-lower+1) {
+      throw new Error("Cannot generate more than upper - lower + 1 unique numbers between lower and upper");
+  }
+
+  const uniqueNums = new Set<number>();
+
+  while (uniqueNums.size < n) {
+      const randomNum = Math.floor(Math.random() * (upper-lower+1)) + lower; // Random number between [lower-upper]
+      uniqueNums.add(randomNum);
+  }
+
+  return Array.from(uniqueNums);
+}
+
 export default function Home() {
 
   const SIZE = 6
@@ -168,6 +184,18 @@ export default function Home() {
     }
   }
 
+  async function handleRandom(): Promise<void> {
+    setValues(randomInstance(SIZE, 2, 25).sort((a, b) => a - b));
+    setGoalValue(Math.floor(Math.random() * 400) + 50);
+    setSolutions([]);
+    setValuesHistory([]);
+    setVisibilityHistory([]);
+    setCompositesHistory([]);
+    setComposites(Array(SIZE).fill(false));
+    setVisible(Array(SIZE).fill(true));
+    setOpsSelected(null);
+  }
+
   async function handleSubmit(): Promise<void> {
     
     const visibleValues = values.filter((_, index) => visible[index]);    
@@ -193,11 +221,13 @@ export default function Home() {
     setAllLinkBase(baseurl);
   }
 
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-row-reverse px-4 lg:px-0 mb-0 ml-20 mt-10 mr-20">
         <Toggle isEditable={isEditable} onToggleChange={handleToggleChange} />
         <Button className="mr-5" onClick={event => handleSubmit()}>Find Solutions</Button>
+        <Button className="mr-5" onClick={event => handleRandom()}>Random</Button>
       </div>    
 
       <div className="flex flex-col lg:flex-row w-full">
