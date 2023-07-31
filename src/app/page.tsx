@@ -18,10 +18,10 @@ export function randomInstance(n: number, lower: number, upper: number): number[
       throw new Error("Cannot generate more than upper - lower + 1 unique numbers between lower and upper");
   }
 
-  let uniqueNums = new Set<number>();
+  const uniqueNums = new Set<number>();
 
   while (uniqueNums.size < n) {
-      let randomNum = Math.floor(Math.random() * (upper-lower+1)) + lower; // Random number between [lower-upper]
+      const randomNum = Math.floor(Math.random() * (upper-lower+1)) + lower; // Random number between [lower-upper]
       uniqueNums.add(randomNum);
   }
 
