@@ -12,7 +12,7 @@ import { createSolutionUrl, combine } from './utils/general';
 import { SpringRef } from 'react-spring';
 
 
-export function randomInstance(n: number, lower: number, upper: number): number[] {
+function randomInstance(n: number, lower: number, upper: number): number[] {
   
   if (n > upper-lower+1) {
       throw new Error("Cannot generate more than upper - lower + 1 unique numbers between lower and upper");
