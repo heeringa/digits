@@ -1,4 +1,4 @@
-'use client';
+  'use client';
 
 import React, { useState, useEffect } from 'react';
 import Grid from './components/Grid';
@@ -10,6 +10,7 @@ import { Button } from 'flowbite-react';
 import { Results, Result } from './components/Results';
 import { createSolutionUrl, combine } from './utils/general';
 import { SpringRef } from 'react-spring';
+import Confetti from './components/Confetti';
 
 
 function randomInstance(n: number, lower: number, upper: number): number[] {
@@ -47,6 +48,8 @@ export default function Home() {
   const [composites, setComposites] = useState<Array<boolean>>(Array(SIZE).fill(false));
   const [compositesHistory, setCompositesHistory] = useState<Array<boolean>[]>([]);
   const [allLinkBase, setAllLinkBase] = useState<string>("");
+  const [confetti, setConfetti] = useState<boolean>(false);
+  
 
   useEffect(() => {
     // This will run whenever selectedSpringRef changes.
@@ -134,6 +137,11 @@ export default function Home() {
                   to: { x: 0, y: 0 },
                   config: { duration: 0 }, // Instant transition
                 });
+
+                // if we've reached the target then fire the confetti
+                if (vals[index] === goalValue) {
+                  setConfetti(true);
+                }
               }
             });
             setSelectedSpringRef(null);
@@ -194,6 +202,7 @@ export default function Home() {
     setComposites(Array(SIZE).fill(false));
     setVisible(Array(SIZE).fill(true));
     setOpsSelected(null);
+    setConfetti(false);
   }
 
   async function handleSubmit(): Promise<void> {
@@ -277,6 +286,7 @@ export default function Home() {
         </div>
   
       </div>
+      {confetti && <Confetti />}
     </div>
   
   );
