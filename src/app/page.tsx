@@ -226,8 +226,8 @@ export default function Home() {
     <div className="flex flex-col">
       <div className="flex flex-row-reverse px-4 lg:px-0 mb-0 ml-20 mt-10 mr-20">
         <Toggle isEditable={isEditable} onToggleChange={handleToggleChange} />
-        <Button className="mr-5" onClick={event => handleSubmit()}>Find Solutions</Button>
-        <Button className="mr-5" onClick={event => handleRandom()}>Random</Button>
+        <Button className="mr-5" onClick={(event: any) => handleSubmit()}>Find Solutions</Button>
+        <Button className="mr-5" onClick={(event: any) => handleRandom()}>Random</Button>
       </div>    
 
       <div className="flex flex-col lg:flex-row w-full">
