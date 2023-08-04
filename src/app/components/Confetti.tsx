@@ -2,9 +2,11 @@ import React, { useCallback, useRef, useEffect } from "react";
 import ReactCanvasConfetti from "react-canvas-confetti";
 
 export default function Confetti() {
-    const refAnimationInstance = useRef(null);
-  
-    const getInstance = useCallback((instance: any) => {
+    
+    const refAnimationInstance = useRef<((options: object) => void) | null>(null);
+
+
+    const getInstance = useCallback((instance: any  ) => {
       refAnimationInstance.current = instance;
     }, []);
   
