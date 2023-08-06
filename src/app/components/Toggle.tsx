@@ -9,10 +9,10 @@ interface ToggleProps {
 function Toggle({isEditable, onToggleChange}: ToggleProps) {
 
   return (
-    <div className="flex items-center mr-5">
+    <div className="flex items-center">
       <label htmlFor="toggle" className="flex items-center cursor-pointer">
         <div className="text-lg mr-2">
-            Edit Mode
+            Edit
         </div>
         <div className="relative">
           <input type="checkbox" id="toggle" className="sr-only" checked={isEditable} 
