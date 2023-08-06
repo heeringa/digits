@@ -25,9 +25,6 @@ function ResultRow({insol, outsol, ops, url}: ResultWithUrl): JSX.Element {
       </div>
     </Table.Cell>
     <Table.Cell>
-      {outsol.join(" ")}
-    </Table.Cell>
-    <Table.Cell>
       <div className="flex flex-wrap">
       {ops.map((op, index) => (
         <Badge className="ml-1 mr-1" key={index} color="gray">{op}</Badge>
@@ -51,9 +48,6 @@ export function Results( {results, url}: {results: Array<Result>, url: string}):
           <Table.Head>
             <Table.HeadCell>
               Values Used
-            </Table.HeadCell>
-            <Table.HeadCell>
-              Values Remaining
             </Table.HeadCell>
             <Table.HeadCell>
               Operations
