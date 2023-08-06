@@ -23,8 +23,9 @@ function Operation({ disabled=true, isSelected=false, Icon, op, onOperationClick
     <div className={basestyle}>
       <Button disabled={disabled} 
               color={color}
+              size="lg"
               onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => onOperationClick(op, event)}>
-        <Icon />
+        <Icon className='h-9'/>
       </Button>
     </div>
 
