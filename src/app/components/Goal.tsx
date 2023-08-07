@@ -8,7 +8,7 @@ interface GoalProps {
 
 function Goal({ isEditable=true, value, onGoalChange }:GoalProps): React.JSX.Element {
 
-  const basestyle = "flex items-center justify-center h-16 w-36 border-b border-gray-800";
+  const basestyle = "flex items-center justify-center h-16 w-36 ";
   const style = isEditable ? `${basestyle}` : basestyle; 
   
   return (

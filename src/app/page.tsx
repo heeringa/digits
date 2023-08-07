@@ -36,12 +36,12 @@ export default function Home() {
   const allLink = "/solutionspace"
 
   const [isEditable, setEditable] = useState(false);
-  const [values, setValues] = useState<Array<number | null>>([3,5,12,14,15,17]);
+  const [values, setValues] = useState<Array<number | null>>(randomInstance(SIZE, 2, 25).sort((a, b) => a - b));
   const [visible, setVisible] = React.useState<Array<boolean>>(Array(SIZE).fill(true));
   const [numSelected, setNumSelected] = useState<number | null>(null);
   const [selectedSpringRef, setSelectedSpringRef] = useState<SpringRef | null>(() => null);
   const [opsSelected, setOpsSelected] = useState<string |null>(null);
-  const [goalValue, setGoalValue] = useState<number | null>(492);
+  const [goalValue, setGoalValue] = useState<number | null>(Math.floor(Math.random() * 400) + 50);
   const [valuesHistory, setValuesHistory] = useState<Array<number | null>[]>([]);
   const [visibilityHistory, setVisibilityHistory] = useState<Array<boolean>[]>([]);
   const [solutions, setSolutions] = useState<Array<Result>>([]);
@@ -125,6 +125,11 @@ export default function Home() {
                 setNumSelected(null);
                 setOpsSelected(null);
 
+                //const solutionsCopy = [...solutions];
+                //solutionsCopy.insol.push([x, y]), 
+                //solutionsCopy[ops].push(combine(opsSelected, x, y))
+                //setSolutions()
+
                 // update the composite history to include the current composites
                 setCompositesHistory([...compositesHistory, composites]);
                 // copy the composites and update the entry of the new target
@@ -138,6 +143,7 @@ export default function Home() {
                   config: { duration: 0 }, // Instant transition
                 });
 
+            
                 // if we've reached the target then fire the confetti
                 if (vals[index] === goalValue) {
                   setConfetti(true);
@@ -241,7 +247,7 @@ export default function Home() {
 
       <div className="flex flex-col lg:flex-row w-full">
         <div className="lg:w-1/2 flex flex-col items-center">
-          <div className="mb-10">
+          <div className="mt-5 mb-5">
           <Goal value={goalValue} isEditable={isEditable} onGoalChange={handleGoalValueChange} />
           </div>      
           <Grid values={values} 
