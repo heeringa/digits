@@ -1,12 +1,12 @@
 from typing import List, Optional
 from fastapi import FastAPI, Query
-from digits import generate_solutions
+from digits import generate_solutions, combine
 
 app = FastAPI()
 
 
 def ops_to_str(ops) -> List[str]:
-    return ["{} {} {}".format(op[1], op[0], op[2]) for op in ops]
+    return ["{} {} {} = {}".format(op[1], op[0], op[2], combine(op[0], op[1], op[2])) for op in ops]
 
 @app.get("/api/allsolutions")
 def allsolutions(goal: int, nums: Optional[List[int]] = Query(None)):
