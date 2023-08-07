@@ -20,7 +20,7 @@ You should have `node`, `python 3.9`, and `pipenv` installed. This project is wr
 6. Add the working directory to your Python search path `export PYTHONPATH=$PYTHONPATH:<path-to-digits>`
 7. Start the local fastapi server `uvicorn index:app --reload --app-dir ./api`
 
-Point your browser at [localhost:300](http://localhost:3000/).
+Point your browser at [localhost:3000](http://localhost:3000/).
 
 ## Implementation Notes
 
